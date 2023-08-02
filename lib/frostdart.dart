@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:ffi/ffi.dart';
 import 'package:frostdart/frostdart_bindings_generated.dart';
+import 'package:frostdart/util.dart';
 
 const String _libName = 'frostdart';
 
@@ -23,7 +24,7 @@ final ffi.DynamicLibrary _dylib = () {
 /// The bindings to the native functions in [_dylib].
 final FrostdartBindings _bindings = FrostdartBindings(_dylib);
 
-CResult_MultisigConfigRes newMultisigConfig({
+ffi.Pointer<MultisigConfigRes> newMultisigConfig({
   required String name,
   required int threshold,
   required List<String> participants,
@@ -52,11 +53,17 @@ CResult_MultisigConfigRes newMultisigConfig({
   calloc.free(multisigName);
   calloc.free(participantsPointer);
 
-  return result;
+  if (result.err != SUCCESS) {
+    throw FrostdartException(errorCode: result.err);
+  } else {
+    return result.value;
+  }
 }
 
-String multisigName({required ffi.Pointer<MultisigConfigRes> configRes}) {
-  final result = _bindings.multisig_name(configRes.ref.config);
+String multisigName({
+  required ffi.Pointer<MultisigConfig> multisigConfigPointer,
+}) {
+  final result = _bindings.multisig_name(multisigConfigPointer);
 
   final bytes = result.ptr.asTypedList(result.len);
   final String name = String.fromCharCodes(bytes);

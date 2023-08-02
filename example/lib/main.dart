@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:frostdart/frostdart.dart' as frostdart;
 import 'package:frostdart/frostdart_bindings_generated.dart';
@@ -14,7 +16,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late CResult_MultisigConfigRes result;
+  late Pointer<MultisigConfigRes> result;
 
   String name = "ERROR";
 
@@ -26,7 +28,7 @@ class _MyAppState extends State<MyApp> {
         threshold: 3,
         participants: ["jimmy", "john", "toby"]);
 
-    name = frostdart.multisigName(configRes: result.value);
+    name = frostdart.multisigName(multisigConfigPointer: result.ref.config);
   }
 
   @override
