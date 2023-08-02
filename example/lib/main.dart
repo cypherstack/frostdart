@@ -14,19 +14,19 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late CResult_MultisigConfigRes sumResult;
+  late CResult_MultisigConfigRes result;
 
-  String name = "REKT";
+  String name = "ERROR";
 
   @override
   void initState() {
     super.initState();
-    sumResult = frostdart.newMultisigConfig(
-        name: "Name AAAAAA",
+    result = frostdart.newMultisigConfig(
+        name: "Some kind of name",
         threshold: 3,
         participants: ["jimmy", "john", "toby"]);
 
-    // name = frostdart.multisigName(configRes: sumResult.value.ref);
+    name = frostdart.multisigName(configRes: result.value);
   }
 
   @override
@@ -51,7 +51,7 @@ class _MyAppState extends State<MyApp> {
                 ),
                 spacerSmall,
                 Text(
-                  'Type of result: ${sumResult.runtimeType}',
+                  'Type of result: ${result.runtimeType}',
                   style: textStyle,
                   textAlign: TextAlign.center,
                 ),

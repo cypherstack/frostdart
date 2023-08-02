@@ -30,12 +30,16 @@ CResult_MultisigConfigRes newMultisigConfig({
 }) {
   ffi.Pointer<ffi.Uint8> multisigName = name.toNativeUtf8().cast<ffi.Uint8>();
 
-  final joined = participants.join();
-  ffi.Pointer<ffi.Uint8> parts = joined.toNativeUtf8().cast<ffi.Uint8>();
+  ffi.Pointer<StringView> participantsPointer =
+      calloc<StringView>(participants.length);
 
-  ffi.Pointer<StringView> participantsPointer = calloc<StringView>();
-  participantsPointer.ref.ptr = parts;
-  participantsPointer.ref.len = joined.length;
+  for (int i = 0; i < participants.length; i++) {
+    final p = participants[i];
+    final svp = calloc<StringView>();
+    svp.ref.ptr = p.toNativeUtf8().cast<ffi.Uint8>();
+    svp.ref.len = p.length;
+    participantsPointer[i] = svp.ref;
+  }
 
   final result = _bindings.new_multisig_config(
     multisigName,
@@ -46,14 +50,13 @@ CResult_MultisigConfigRes newMultisigConfig({
   );
 
   calloc.free(multisigName);
-  calloc.free(parts);
   calloc.free(participantsPointer);
 
   return result;
 }
 
-String multisigName({required MultisigConfigRes configRes}) {
-  final result = _bindings.multisig_name(configRes.config);
+String multisigName({required ffi.Pointer<MultisigConfigRes> configRes}) {
+  final result = _bindings.multisig_name(configRes.ref.config);
 
   final bytes = result.ptr.asTypedList(result.len);
   final String name = String.fromCharCodes(bytes);
