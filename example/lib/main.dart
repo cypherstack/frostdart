@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
-
 import 'package:frostdart/frostdart.dart' as frostdart;
+import 'package:frostdart/frostdart_bindings_generated.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,14 +14,19 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late int sumResult;
-  late Future<int> sumAsyncResult;
+  late CResult_MultisigConfigRes sumResult;
+
+  String name = "REKT";
 
   @override
   void initState() {
     super.initState();
-    sumResult = frostdart.sum(1, 2);
-    sumAsyncResult = frostdart.sumAsync(3, 4);
+    sumResult = frostdart.newMultisigConfig(
+        name: "Name AAAAAA",
+        threshold: 3,
+        participants: ["jimmy", "john", "toby"]);
+
+    // name = frostdart.multisigName(configRes: sumResult.value.ref);
   }
 
   @override
@@ -47,22 +51,15 @@ class _MyAppState extends State<MyApp> {
                 ),
                 spacerSmall,
                 Text(
-                  'sum(1, 2) = $sumResult',
+                  'Type of result: ${sumResult.runtimeType}',
                   style: textStyle,
                   textAlign: TextAlign.center,
                 ),
                 spacerSmall,
-                FutureBuilder<int>(
-                  future: sumAsyncResult,
-                  builder: (BuildContext context, AsyncSnapshot<int> value) {
-                    final displayValue =
-                        (value.hasData) ? value.data : 'loading';
-                    return Text(
-                      'await sumAsync(3, 4) = $displayValue',
-                      style: textStyle,
-                      textAlign: TextAlign.center,
-                    );
-                  },
+                Text(
+                  'name: $name',
+                  style: textStyle,
+                  textAlign: TextAlign.center,
                 ),
               ],
             ),
