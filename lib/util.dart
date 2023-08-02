@@ -1,3 +1,5 @@
+import 'package:frostdart/frostdart_bindings_generated.dart';
+
 class FrostdartException implements Exception {
   final int errorCode;
 
@@ -9,7 +11,25 @@ class FrostdartException implements Exception {
   }
 }
 
+const int SALT_BYTES_LENGTH = 32;
+const int HASH_BYTES_LENGTH = 32;
 const int SUCCESS = 0;
+
+enum Language {
+  english(LANGUAGE_ENGLISH),
+  chineseSimplified(LANGUAGE_CHINESE_SIMPLIFIED),
+  chineseTraditional(LANGUAGE_CHINESE_TRADITIONAL),
+  french(LANGUAGE_FRENCH),
+  italian(LANGUAGE_ITALIAN),
+  japanese(LANGUAGE_JAPANESE),
+  korean(LANGUAGE_KOREAN),
+  spanish(LANGUAGE_SPANISH),
+  ;
+
+  final int code;
+
+  const Language(this.code);
+}
 
 String getErrorName(int errorCode) {
   switch (errorCode) {
