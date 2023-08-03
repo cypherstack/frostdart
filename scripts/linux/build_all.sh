@@ -4,6 +4,8 @@ ROOT_DIR="$(pwd)/../.."
 
 mkdir -p build
 
+rm -rf "$ROOT_DIR"/src/serai/target
+
 cd "$ROOT_DIR"/src/serai/hrf || exit
 if [ "$IS_ARM" = true ]  ; then
     echo "Building arm frostdart"
