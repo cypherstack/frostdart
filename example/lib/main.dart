@@ -1,8 +1,5 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
-import 'package:frostdart/frostdart.dart' as frostdart;
-import 'package:frostdart/frostdart_bindings_generated.dart';
+import 'package:frostdart_example/frost_sample_run.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,57 +13,83 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late Pointer<MultisigConfigRes> result;
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('frostdart'),
+        ),
+        body: const Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: Content(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
-  String name = "ERROR";
+class Content extends StatefulWidget {
+  const Content({super.key});
+
+  @override
+  State<Content> createState() => _ContentState();
+}
+
+class _ContentState extends State<Content> {
+  String? result;
+
+  late bool enableButton;
 
   @override
   void initState() {
+    enableButton = true;
     super.initState();
-    result = frostdart.newMultisigConfig(
-        name: "Some kind of name",
-        threshold: 3,
-        participants: ["jimmy", "john", "toby"]);
-
-    name = frostdart.multisigName(multisigConfigPointer: result.ref.config);
   }
 
   @override
   Widget build(BuildContext context) {
     const textStyle = TextStyle(fontSize: 25);
     const spacerSmall = SizedBox(height: 10);
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Native Packages'),
-        ),
-        body: SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              children: [
-                const Text(
-                  'This calls a native function through FFI that is shipped as source in the package. '
-                  'The native code is built as part of the Flutter Runner build.',
-                  style: textStyle,
-                  textAlign: TextAlign.center,
-                ),
-                spacerSmall,
-                Text(
-                  'Type of result: ${result.runtimeType}',
-                  style: textStyle,
-                  textAlign: TextAlign.center,
-                ),
-                spacerSmall,
-                Text(
-                  'name: $name',
-                  style: textStyle,
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
+    return Container(
+      padding: const EdgeInsets.all(10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          TextButton(
+            onPressed: () async {
+              setState(() {
+                enableButton = false;
+              });
+              showDialog(
+                  barrierDismissible: false,
+                  context: context,
+                  builder: (context) =>
+                      const AlertDialog(title: Text("Running")));
+              result = await FrostSampleRunner.run();
+              if (mounted) {
+                Navigator.of(context).pop();
+                setState(() {
+                  enableButton = true;
+                });
+              }
+            },
+            child: const Text("RUN"),
           ),
-        ),
+          spacerSmall,
+          spacerSmall,
+          spacerSmall,
+          Text(
+            'Result: ${result.toString()}',
+            style: textStyle,
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }
