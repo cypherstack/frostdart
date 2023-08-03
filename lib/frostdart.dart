@@ -271,9 +271,7 @@ String serializeKeys({
 }) {
   final ownedString = _bindings.serialize_keys(keys);
 
-  final string = ownedString.ptr.cast<Utf8>().toDartString(
-        length: ownedString.len,
-      );
+  final string = ownedString.toDartString();
 
   _bindings.free_owned_string(ownedString);
 
@@ -558,9 +556,7 @@ String completeSign({
   } else {
     final ownedString = result.value.ref;
 
-    final string = ownedString.ptr.cast<Utf8>().toDartString(
-          length: ownedString.len,
-        );
+    final string = ownedString.toDartString();
 
     _bindings.free_owned_string(ownedString);
 

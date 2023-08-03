@@ -1,3 +1,4 @@
+import 'package:ffi/ffi.dart';
 import 'package:frostdart/frostdart_bindings_generated.dart';
 
 class FrostdartException implements Exception {
@@ -79,5 +80,14 @@ String getErrorName(int errorCode) {
       return 'INVALID_PREPROCESS_ERROR';
     default:
       return 'UNKNOWN ERROR CODE "$errorCode"';
+  }
+}
+
+extension OwnedStringExt on OwnedString {
+  String toDartString() {
+    final string = ptr.cast<Utf8>().toDartString(
+          length: len,
+        );
+    return string;
   }
 }
