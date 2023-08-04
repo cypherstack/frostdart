@@ -35,49 +35,49 @@ enum Language {
 
 String getErrorName(int errorCode) {
   switch (errorCode) {
-    case 101:
+    case UNKNOWN_ERROR:
       return 'UNKNOWN_ERROR';
-    case 102:
+    case INVALID_ENCODING_ERROR:
       return 'INVALID_ENCODING_ERROR';
-    case 103:
+    case INVALID_PARTICIPANT_ERROR:
       return 'INVALID_PARTICIPANT_ERROR';
-    case 104:
+    case INVALID_SHARE_ERROR:
       return 'INVALID_SHARE_ERROR';
-    case 201:
+    case ZERO_PARAMETER_ERROR:
       return 'ZERO_PARAMETER_ERROR';
-    case 202:
+    case INVALID_THRESHOLD_ERROR:
       return 'INVALID_THRESHOLD_ERROR';
-    case 203:
+    case INVALID_NAME_ERROR:
       return 'INVALID_NAME_ERROR';
-    case 204:
+    case UNKNOWN_LANGUAGE_ERROR:
       return 'UNKNOWN_LANGUAGE_ERROR';
-    case 205:
+    case INVALID_SEED_ERROR:
       return 'INVALID_SEED_ERROR';
-    case 206:
+    case INVALID_AMOUNT_OF_COMMITMENTS_ERROR:
       return 'INVALID_AMOUNT_OF_COMMITMENTS_ERROR';
-    case 207:
+    case INVALID_COMMITMENTS_ERROR:
       return 'INVALID_COMMITMENTS_ERROR';
-    case 208:
+    case INVALID_AMOUNT_OF_SHARES_ERROR:
       return 'INVALID_AMOUNT_OF_SHARES_ERROR';
-    case 301:
+    case INVALID_OUTPUT_ERROR:
       return 'INVALID_OUTPUT_ERROR';
-    case 302:
+    case INVALID_ADDRESS_ERROR:
       return 'INVALID_ADDRESS_ERROR';
-    case 303:
+    case INVALID_NETWORK_ERROR:
       return 'INVALID_NETWORK_ERROR';
-    case 304:
+    case NO_INPUTS_ERROR:
       return 'NO_INPUTS_ERROR';
-    case 305:
+    case NO_OUTPUTS_ERROR:
       return 'NO_OUTPUTS_ERROR';
-    case 306:
+    case DUST_ERROR:
       return 'DUST_ERROR';
-    case 307:
+    case NOT_ENOUGH_FUNDS_ERROR:
       return 'NOT_ENOUGH_FUNDS_ERROR';
-    case 308:
+    case TOO_LARGE_TRANSACTION_ERROR:
       return 'TOO_LARGE_TRANSACTION_ERROR';
-    case 309:
+    case WRONG_KEYS_ERROR:
       return 'WRONG_KEYS_ERROR';
-    case 310:
+    case INVALID_PREPROCESS_ERROR:
       return 'INVALID_PREPROCESS_ERROR';
     default:
       return 'UNKNOWN ERROR CODE "$errorCode"';
@@ -91,4 +91,15 @@ extension OwnedStringExt on OwnedString {
         );
     return string;
   }
+}
+
+List<int> hexStringToList(String hexString) {
+  final length = hexString.length;
+  List<int> result = [];
+  for (int i = 0; i < length; i += 2) {
+    String hexByte = hexString.substring(i, i + 2);
+    int byteValue = int.parse(hexByte, radix: 16);
+    result.add(byteValue);
+  }
+  return result;
 }
