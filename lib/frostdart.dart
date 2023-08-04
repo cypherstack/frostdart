@@ -405,17 +405,16 @@ ffi.Pointer<SignConfigRes> newSignConfig({
     outputsPointer[i].value = outputs[i].value;
 
     final hashLength = outputs[i].hash.length;
-    final hashArr = ffi.Array<ffi.Uint8>(hashLength);
     for (int j = 0; j < hashLength; j++) {
-      hashArr[j] = outputs[i].hash[j];
+      outputsPointer[i].hash[j] = outputs[i].hash[j];
     }
-    outputsPointer[i].hash = hashArr;
     outputsPointer[i].script_pubkey_len = outputs[i].scriptPubKey.length;
 
     outputsPointer[i].script_pubkey =
         calloc<ffi.Uint8>(outputsPointer[i].script_pubkey_len);
     for (int j = 0; j < outputsPointer[i].script_pubkey_len; j++) {
-      outputsPointer[i].script_pubkey.elementAt(j).value = outputs[i].hash[j];
+      outputsPointer[i].script_pubkey.elementAt(j).value =
+          outputs[i].scriptPubKey[j];
     }
   }
 
