@@ -570,8 +570,6 @@ String completeSign({
     shares.length,
   );
 
-  calloc.free(sharesPointer);
-
   if (result.err != SUCCESS) {
     throw FrostdartException(errorCode: result.err);
   } else {
