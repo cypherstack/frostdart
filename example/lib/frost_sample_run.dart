@@ -86,19 +86,19 @@ abstract class FrostSampleRunner {
       final bobPre = attemptSignResBob.ref.preprocess.toDartString();
       debugPrint("bobPre: $bobPre");
 
-      final preprocesses = [
-        alicePre,
-        bobPre,
-      ];
-      debugPrint("preprocesses: $preprocesses");
-
       final continueSignResAlice = continueSign(
         machine: attemptSignResAlice.ref.machine,
-        preprocesses: preprocesses,
+        preprocesses: [
+          "",
+          bobPre,
+        ],
       );
       final continueSignResBob = continueSign(
         machine: attemptSignResBob.ref.machine,
-        preprocesses: preprocesses,
+        preprocesses: [
+          alicePre,
+          "",
+        ],
       );
       debugPrint("continueSign finished");
 
@@ -110,7 +110,7 @@ abstract class FrostSampleRunner {
       final completeSignResAlice = completeSign(
         machine: continueSignResAlice.ref.machine,
         shares: [
-          contPreAlice,
+          "",
           contPreBob,
         ],
       );
@@ -118,10 +118,16 @@ abstract class FrostSampleRunner {
         machine: continueSignResBob.ref.machine,
         shares: [
           contPreAlice,
-          contPreBob,
+          "",
         ],
       );
       debugPrint("completeSign finished");
+
+      debugPrint("completeSignResAlice: $completeSignResAlice");
+      debugPrint("completeSignResBob: $completeSignResBob");
+
+      debugPrint(
+          "completeSignResBob == completeSignResAlice:: ${completeSignResBob == completeSignResAlice}");
 
       // return "success" or return early with error message string
       return "success";
