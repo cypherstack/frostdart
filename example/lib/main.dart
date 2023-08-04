@@ -54,7 +54,7 @@ class _ContentState extends State<Content> {
   @override
   Widget build(BuildContext context) {
     const textStyle = TextStyle(fontSize: 25);
-    const spacerSmall = SizedBox(height: 10);
+    const spacerSmall = SizedBox(height: 30);
     return Container(
       padding: const EdgeInsets.all(10),
       child: Column(
@@ -67,11 +67,15 @@ class _ContentState extends State<Content> {
                 enableButton = false;
               });
               showDialog(
-                  barrierDismissible: false,
-                  context: context,
-                  builder: (context) =>
-                      const AlertDialog(title: Text("Running")));
-              result = await FrostSampleRunner.run();
+                barrierDismissible: false,
+                context: context,
+                builder: (context) => const AlertDialog(
+                  title: Text(
+                    "Running",
+                  ),
+                ),
+              );
+              result = await FrostSampleRunner.runKeygen();
               if (mounted) {
                 Navigator.of(context).pop();
                 setState(() {
@@ -79,13 +83,14 @@ class _ContentState extends State<Content> {
                 });
               }
             },
-            child: const Text("RUN"),
+            child: const Text(
+              "RUN SIMPLE KEYGEN TEST",
+              style: textStyle,
+            ),
           ),
           spacerSmall,
-          spacerSmall,
-          spacerSmall,
           Text(
-            'Result: ${result.toString()}',
+            'Keygen result: ${result.toString()}',
             style: textStyle,
             textAlign: TextAlign.center,
           ),

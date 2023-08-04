@@ -14,6 +14,7 @@ class FrostdartException implements Exception {
 
 const int SALT_BYTES_LENGTH = 32;
 const int HASH_BYTES_LENGTH = 32;
+const int MULTISIG_ID_LENGTH = 32;
 const int SUCCESS = 0;
 
 enum Language {

@@ -5,11 +5,13 @@ import 'package:frostdart/frostdart.dart';
 import 'package:frostdart/util.dart';
 
 abstract class FrostSampleRunner {
-  static String _run(int? dummy) {
-    try {
-      // do things
+  static Future<String> runKeygen() async {
+    return await compute(_runKeygen, null);
+  }
 
-      final config = newMultisigConfig(
+  static String _runKeygen(int? dummy) {
+    try {
+      final sharedMultisigConfig = newMultisigConfig(
         name: "alice",
         threshold: 1,
         participants: [
@@ -18,7 +20,7 @@ abstract class FrostSampleRunner {
         ],
       );
 
-      final encodedConfig = config.ref.encoded.toDartString();
+      final encodedConfig = sharedMultisigConfig.ref.encoded.toDartString();
 
       final startGenAlice = startKeyGen(
         multisigConfig: decodeMultisigConfig(multisigConfig: encodedConfig),
@@ -64,11 +66,47 @@ abstract class FrostSampleRunner {
       ];
       debugPrint("shares: $shares");
 
-      final completeGen = completeKeyGen(
+      final completeGenAlice = completeKeyGen(
         multisigConfigWithName: startGenAlice.ref.config,
         machineAndCommitments: secretSharesAlice,
         shares: shares,
       );
+
+      final completeGenBob = completeKeyGen(
+        multisigConfigWithName: startGenBob.ref.config,
+        machineAndCommitments: secretSharesBob,
+        shares: shares,
+      );
+
+      final idAlice = Uint8List.fromList(
+        List<int>.generate(
+          MULTISIG_ID_LENGTH,
+          (index) => completeGenAlice.ref.multisig_id[index],
+        ),
+      );
+      final idBob = Uint8List.fromList(
+        List<int>.generate(
+          MULTISIG_ID_LENGTH,
+          (index) => completeGenBob.ref.multisig_id[index],
+        ),
+      );
+      debugPrint("ID Alice: $idAlice");
+      debugPrint("ID Bob: $idBob");
+
+      final recoveryAlice = completeGenAlice.ref.recovery.toDartString();
+      final recoveryBob = completeGenBob.ref.recovery.toDartString();
+      debugPrint("recoveryAlice: $recoveryAlice");
+      debugPrint("recoveryBob: $recoveryBob");
+
+      for (int i = 0; i < MULTISIG_ID_LENGTH; i++) {
+        if (idAlice[i] != idBob[i]) {
+          return "IDs don't match!";
+        }
+      }
+
+      if (recoveryAlice != recoveryBob) {
+        return "Recovery strings don't match!";
+      }
 
       // return "success" or return early with error message string
       return "success";
@@ -76,9 +114,5 @@ abstract class FrostSampleRunner {
       debugPrint("run error: $e\n$s");
       return e.toString();
     }
-  }
-
-  static Future<String> run() async {
-    return await compute(_run, null);
   }
 }
