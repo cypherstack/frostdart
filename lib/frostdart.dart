@@ -390,12 +390,15 @@ int signFeePerWeight({
 ffi.Pointer<SignConfigRes> newSignConfig({
   required int network,
   required List<Output> outputs,
-  required int payments,
   required List<String> paymentAddresses,
   required List<int> paymentAmounts,
   required String change,
   required int feePerWeight,
 }) {
+  if (paymentAddresses.length != paymentAmounts.length) {
+    throw Exception("paymentAddresses.length != paymentAmounts.length");
+  }
+
   final outputsPointer = calloc<PortableOutput>(outputs.length);
   for (int i = 0; i < outputs.length; i++) {
     outputsPointer[i].vout = outputs[i].vout;
@@ -442,7 +445,7 @@ ffi.Pointer<SignConfigRes> newSignConfig({
     network,
     outputsPointer,
     outputs.length,
-    payments,
+    paymentAddresses.length,
     paymentAddressesPointer,
     paymentAmountsPointer,
     stringViewPointer.ref,
