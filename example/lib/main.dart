@@ -41,7 +41,8 @@ class Content extends StatefulWidget {
 }
 
 class _ContentState extends State<Content> {
-  String? result;
+  String? resultKeygen;
+  String? resultSign;
 
   late bool enableButton;
 
@@ -54,7 +55,7 @@ class _ContentState extends State<Content> {
   @override
   Widget build(BuildContext context) {
     const textStyle = TextStyle(fontSize: 25);
-    const spacerSmall = SizedBox(height: 30);
+    const spacerSmall = SizedBox(height: 20);
     return Container(
       padding: const EdgeInsets.all(10),
       child: Column(
@@ -62,27 +63,29 @@ class _ContentState extends State<Content> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           TextButton(
-            onPressed: () async {
-              setState(() {
-                enableButton = false;
-              });
-              showDialog(
-                barrierDismissible: false,
-                context: context,
-                builder: (context) => const AlertDialog(
-                  title: Text(
-                    "Running",
-                  ),
-                ),
-              );
-              result = await FrostSampleRunner.runKeygen();
-              if (mounted) {
-                Navigator.of(context).pop();
-                setState(() {
-                  enableButton = true;
-                });
-              }
-            },
+            onPressed: !enableButton
+                ? null
+                : () async {
+                    setState(() {
+                      enableButton = false;
+                    });
+                    showDialog(
+                      barrierDismissible: false,
+                      context: context,
+                      builder: (context) => const AlertDialog(
+                        title: Text(
+                          "Running",
+                        ),
+                      ),
+                    );
+                    resultKeygen = await FrostSampleRunner.runKeygen();
+                    if (mounted) {
+                      Navigator.of(context).pop();
+                      setState(() {
+                        enableButton = true;
+                      });
+                    }
+                  },
             child: const Text(
               "RUN SIMPLE KEYGEN TEST",
               style: textStyle,
@@ -90,7 +93,45 @@ class _ContentState extends State<Content> {
           ),
           spacerSmall,
           Text(
-            'Keygen result: ${result.toString()}',
+            'Keygen result: $resultKeygen',
+            style: textStyle,
+            textAlign: TextAlign.center,
+          ),
+          spacerSmall,
+          spacerSmall,
+          spacerSmall,
+          TextButton(
+            onPressed: enableButton
+                ? () async {
+                    setState(() {
+                      enableButton = false;
+                    });
+                    showDialog(
+                      barrierDismissible: false,
+                      context: context,
+                      builder: (context) => const AlertDialog(
+                        title: Text(
+                          "Running",
+                        ),
+                      ),
+                    );
+                    resultSign = await FrostSampleRunner.runSign();
+                    if (mounted) {
+                      Navigator.of(context).pop();
+                      setState(() {
+                        enableButton = true;
+                      });
+                    }
+                  }
+                : null,
+            child: const Text(
+              "RUN SIMPLE SIGN TEST",
+              style: textStyle,
+            ),
+          ),
+          spacerSmall,
+          Text(
+            'Sign result: ${resultSign.toString()}',
             style: textStyle,
             textAlign: TextAlign.center,
           ),
