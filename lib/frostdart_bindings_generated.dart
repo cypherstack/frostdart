@@ -300,6 +300,38 @@ class FrostdartBindings {
   late final _deserialize_keys = _deserialize_keysPtr
       .asFunction<CResult_ThresholdKeysWrapper Function(StringView)>();
 
+  OwnedString address_for_keys(
+    int network,
+    ffi.Pointer<ThresholdKeysWrapper> keys,
+  ) {
+    return _address_for_keys(
+      network,
+      keys,
+    );
+  }
+
+  late final _address_for_keysPtr = _lookup<
+      ffi.NativeFunction<
+          OwnedString Function(ffi.Int32,
+              ffi.Pointer<ThresholdKeysWrapper>)>>('address_for_keys');
+  late final _address_for_keys = _address_for_keysPtr.asFunction<
+      OwnedString Function(int, ffi.Pointer<ThresholdKeysWrapper>)>();
+
+  OwnedString script_pub_key_for_keys(
+    ffi.Pointer<ThresholdKeysWrapper> keys,
+  ) {
+    return _script_pub_key_for_keys(
+      keys,
+    );
+  }
+
+  late final _script_pub_key_for_keysPtr = _lookup<
+      ffi.NativeFunction<
+          OwnedString Function(
+              ffi.Pointer<ThresholdKeysWrapper>)>>('script_pub_key_for_keys');
+  late final _script_pub_key_for_keys = _script_pub_key_for_keysPtr
+      .asFunction<OwnedString Function(ffi.Pointer<ThresholdKeysWrapper>)>();
+
   ffi.Pointer<ffi.Uint8> output_hash(
     ffi.Pointer<OwnedPortableOutput> self,
   ) {
