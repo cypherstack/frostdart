@@ -358,6 +358,25 @@ String signPaymentAddress({
   return string;
 }
 
+String addressForKeys({
+  required int network,
+  required ffi.Pointer<ThresholdKeysWrapper> keys,
+}) {
+  final ownedString = _bindings.address_for_keys(network, keys);
+
+  return ownedString.toDartString();
+}
+
+Uint8List scriptPubKeyForKeys({
+  required ffi.Pointer<ThresholdKeysWrapper> keys,
+}) {
+  final ownedString = _bindings.script_pub_key_for_keys(keys);
+
+  final bytes = ownedString.ptr.asTypedList(ownedString.len);
+
+  return bytes;
+}
+
 int signPaymentAmount({
   required ffi.Pointer<SignConfig> signConfigPointer,
   required int index,
