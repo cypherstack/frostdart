@@ -486,7 +486,7 @@ ffi.Pointer<SignConfig> decodeSignConfig({
 
 ffi.Pointer<AttemptSignRes> attemptSign({
   required ffi.Pointer<ThresholdKeysWrapper> thresholdKeysWrapperPointer,
-  required ffi.Pointer<ffi.Pointer<SignConfig>> signConfigPointer,
+  required ffi.Pointer<SignConfig> signConfigPointer,
 }) {
   final result = _bindings.attempt_sign(
     thresholdKeysWrapperPointer,

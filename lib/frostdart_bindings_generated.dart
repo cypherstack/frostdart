@@ -539,7 +539,7 @@ class FrostdartBindings {
 
   CResult_AttemptSignRes attempt_sign(
     ffi.Pointer<ThresholdKeysWrapper> keys,
-    ffi.Pointer<ffi.Pointer<SignConfig>> config,
+    ffi.Pointer<SignConfig> config,
   ) {
     return _attempt_sign(
       keys,
@@ -550,10 +550,10 @@ class FrostdartBindings {
   late final _attempt_signPtr = _lookup<
       ffi.NativeFunction<
           CResult_AttemptSignRes Function(ffi.Pointer<ThresholdKeysWrapper>,
-              ffi.Pointer<ffi.Pointer<SignConfig>>)>>('attempt_sign');
+              ffi.Pointer<SignConfig>)>>('attempt_sign');
   late final _attempt_sign = _attempt_signPtr.asFunction<
-      CResult_AttemptSignRes Function(ffi.Pointer<ThresholdKeysWrapper>,
-          ffi.Pointer<ffi.Pointer<SignConfig>>)>();
+      CResult_AttemptSignRes Function(
+          ffi.Pointer<ThresholdKeysWrapper>, ffi.Pointer<SignConfig>)>();
 
   CResult_ContinueSignRes continue_sign(
     ffi.Pointer<TransactionSignMachineWrapper> machine,
