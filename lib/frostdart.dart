@@ -367,14 +367,12 @@ String addressForKeys({
   return ownedString.toDartString();
 }
 
-Uint8List scriptPubKeyForKeys({
+String scriptPubKeyForKeys({
   required ffi.Pointer<ThresholdKeysWrapper> keys,
 }) {
   final ownedString = _bindings.script_pub_key_for_keys(keys);
 
-  final bytes = ownedString.ptr.asTypedList(ownedString.len);
-
-  return bytes;
+  return ownedString.toDartString();
 }
 
 int signPaymentAmount({
