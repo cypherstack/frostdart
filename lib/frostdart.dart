@@ -399,7 +399,6 @@ String signChange({
 
 int signFeePerWeight({
   required ffi.Pointer<SignConfig> signConfigPointer,
-  required int index,
 }) {
   return _bindings.sign_fee_per_weight(signConfigPointer);
 }
