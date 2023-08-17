@@ -82,8 +82,6 @@ Uint8List multisigSalt({
   final uint8Pointer = _bindings.multisig_salt(multisigConfigPointer);
   final bytes = uint8Pointer.asTypedList(SALT_BYTES_LENGTH);
 
-  calloc.free(uint8Pointer);
-
   return bytes;
 }
 
