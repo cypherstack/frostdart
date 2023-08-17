@@ -75,8 +75,9 @@ String multisigParticipant({
 }
 
 Uint8List multisigSalt({
-  required ffi.Pointer<MultisigConfig> multisigConfigPointer,
+  required String multisigConfig ,
 }) {
+  final multisigConfigPointer = decodeMultisigConfig(multisigConfig: multisigConfig);
   final uint8Pointer = _bindings.multisig_salt(multisigConfigPointer);
   final bytes = uint8Pointer.asTypedList(SALT_BYTES_LENGTH);
 
