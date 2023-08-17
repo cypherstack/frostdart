@@ -75,9 +75,10 @@ String multisigParticipant({
 }
 
 Uint8List multisigSalt({
-  required String multisigConfig ,
+  required String multisigConfig,
 }) {
-  final multisigConfigPointer = decodeMultisigConfig(multisigConfig: multisigConfig);
+  final multisigConfigPointer =
+      decodeMultisigConfig(multisigConfig: multisigConfig);
   final uint8Pointer = _bindings.multisig_salt(multisigConfigPointer);
   final bytes = uint8Pointer.asTypedList(SALT_BYTES_LENGTH);
 
@@ -274,7 +275,7 @@ String serializeKeys({
 
   final string = ownedString.toDartString();
 
-  _bindings.free_owned_string(ownedString);
+  freeOwnedString(ownedString);
 
   return string;
 }
@@ -365,7 +366,11 @@ String addressForKeys({
 }) {
   final ownedString = _bindings.address_for_keys(network, keys);
 
-  return ownedString.toDartString();
+  final string = ownedString.toDartString();
+
+  freeOwnedString(ownedString);
+
+  return string;
 }
 
 String scriptPubKeyForKeys({
@@ -373,7 +378,11 @@ String scriptPubKeyForKeys({
 }) {
   final ownedString = _bindings.script_pub_key_for_keys(keys);
 
-  return ownedString.toDartString();
+  final string = ownedString.toDartString();
+
+  freeOwnedString(ownedString);
+
+  return string;
 }
 
 int signPaymentAmount({
@@ -575,7 +584,7 @@ String completeSign({
 
     final string = ownedString.toDartString();
 
-    _bindings.free_owned_string(ownedString);
+    freeOwnedString(ownedString);
 
     return string;
   }
