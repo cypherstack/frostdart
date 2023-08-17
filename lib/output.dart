@@ -12,4 +12,12 @@ class Output {
     required this.value,
     required this.scriptPubKey,
   });
+
+  @override
+  String toString() => 'Output{'
+      'hash: $hash, '
+      'vout: $vout, '
+      'value: $value, '
+      'scriptPubKey: $scriptPubKey'
+      '}';
 }
