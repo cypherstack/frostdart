@@ -33,7 +33,7 @@ abstract class FrostSampleRunner {
 
       debugPrint("Address: $address");
 
-      final signConfigRes = newSignConfig(
+      final encodedConfig = newSignConfig(
         network: network,
         outputs: [
           Output(
@@ -59,24 +59,17 @@ abstract class FrostSampleRunner {
         feePerWeight: 3000,
       );
 
-      debugPrint("created sign config (ptr address = ${signConfigRes.address}");
-
-      final String encodedConfig = signConfigRes.ref.encoded.toDartString();
-
-      final signConfig = decodeSignConfig(
-        network: network,
-        encodedSignConfig: encodedConfig,
-      );
-
       debugPrint("decoded config finished");
 
       final attemptSignResAlice = attemptSign(
         thresholdKeysWrapperPointer: deserializedKeysAlice,
-        signConfigPointer: signConfigRes.ref.config,
+        signConfig: encodedConfig,
+        network: network,
       );
       final attemptSignResBob = attemptSign(
         thresholdKeysWrapperPointer: deserializedKeysBob,
-        signConfigPointer: signConfig,
+        signConfig: encodedConfig,
+        network: network,
       );
       debugPrint("attemptSign finished");
 
@@ -147,22 +140,20 @@ abstract class FrostSampleRunner {
         "alice",
         "bob",
       ];
-      final sharedMultisigConfig = newMultisigConfig(
+      final encodedConfig = newMultisigConfig(
         name: "alice",
         threshold: 1,
         participants: participants,
       );
 
-      final encodedConfig = sharedMultisigConfig.ref.encoded.toDartString();
-
       final startGenAlice = startKeyGen(
-        multisigConfig: decodeMultisigConfig(multisigConfig: encodedConfig),
+        multisigConfig: encodedConfig,
         myName: "alice",
         language: Language.english,
       );
 
       final startGenBob = startKeyGen(
-        multisigConfig: decodeMultisigConfig(multisigConfig: encodedConfig),
+        multisigConfig: encodedConfig,
         myName: "bob",
         language: Language.english,
       );

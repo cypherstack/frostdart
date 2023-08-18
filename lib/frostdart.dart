@@ -35,8 +35,10 @@ void freeOwnedString(OwnedString ownedString) {
 }
 
 String multisigName({
-  required ffi.Pointer<MultisigConfig> multisigConfigPointer,
+  required String multisigConfig,
 }) {
+  final multisigConfigPointer =
+      decodeMultisigConfig(multisigConfig: multisigConfig);
   final result = _bindings.multisig_name(multisigConfigPointer);
 
   final bytes = result.ptr.asTypedList(result.len);
@@ -46,21 +48,27 @@ String multisigName({
 }
 
 int multisigThreshold({
-  required ffi.Pointer<MultisigConfig> multisigConfigPointer,
+  required String multisigConfig,
 }) {
+  final multisigConfigPointer =
+      decodeMultisigConfig(multisigConfig: multisigConfig);
   return _bindings.multisig_threshold(multisigConfigPointer);
 }
 
 int multisigParticipants({
-  required ffi.Pointer<MultisigConfig> multisigConfigPointer,
+  required String multisigConfig,
 }) {
+  final multisigConfigPointer =
+      decodeMultisigConfig(multisigConfig: multisigConfig);
   return _bindings.multisig_participants(multisigConfigPointer);
 }
 
 String multisigParticipant({
-  required ffi.Pointer<MultisigConfig> multisigConfigPointer,
   required int index,
+  required String multisigConfig,
 }) {
+  final multisigConfigPointer =
+      decodeMultisigConfig(multisigConfig: multisigConfig);
   final stringView = _bindings.multisig_participant(
     multisigConfigPointer,
     index,
@@ -106,7 +114,7 @@ String multisigMyName({
   return string;
 }
 
-ffi.Pointer<MultisigConfigRes> newMultisigConfig({
+String newMultisigConfig({
   required String name,
   required int threshold,
   required List<String> participants,
@@ -118,14 +126,6 @@ ffi.Pointer<MultisigConfigRes> newMultisigConfig({
   );
 
   for (int i = 0; i < participants.length; i++) {
-    // TODO: is this needed?
-    // final participant = participants[i];
-    // final stringViewPointer = calloc<StringView>();
-    // stringViewPointer.ref.ptr = participant.toNativeUtf8().cast<ffi.Uint8>();
-    // stringViewPointer.ref.len = participant.length;
-    // participantsPointer[i] = stringViewPointer.ref;
-
-    // TODO: or does this suffice?
     participantsPointer[i].len = participants[i].length;
     participantsPointer[i].ptr =
         participants[i].toNativeUtf8().cast<ffi.Uint8>();
@@ -145,7 +145,9 @@ ffi.Pointer<MultisigConfigRes> newMultisigConfig({
   if (result.err != SUCCESS) {
     throw FrostdartException(errorCode: result.err);
   } else {
-    return result.value;
+    final string = result.value.ref.encoded.toDartString();
+    freeOwnedString(result.value.ref.encoded);
+    return string;
   }
 }
 
@@ -169,7 +171,7 @@ ffi.Pointer<MultisigConfig> decodeMultisigConfig({
 }
 
 ffi.Pointer<StartKeyGenRes> startKeyGen({
-  required ffi.Pointer<MultisigConfig> multisigConfig,
+  required String multisigConfig,
   required String myName,
   required Language language,
 }) {
@@ -177,8 +179,11 @@ ffi.Pointer<StartKeyGenRes> startKeyGen({
   stringViewPointer.ref.ptr = myName.toNativeUtf8().cast<ffi.Uint8>();
   stringViewPointer.ref.len = myName.length;
 
+  final multisigConfigPointer =
+      decodeMultisigConfig(multisigConfig: multisigConfig);
+
   final result = _bindings.start_key_gen(
-    multisigConfig,
+    multisigConfigPointer,
     stringViewPointer.ref,
     language.code,
   );
@@ -270,11 +275,8 @@ String serializeKeys({
   required ffi.Pointer<ThresholdKeysWrapper> keys,
 }) {
   final ownedString = _bindings.serialize_keys(keys);
-
   final string = ownedString.toDartString();
-
   freeOwnedString(ownedString);
-
   return string;
 }
 
@@ -296,9 +298,24 @@ ffi.Pointer<ThresholdKeysWrapper> deserializeKeys({
   }
 }
 
-Output convertOutput({
-  required ffi.Pointer<OwnedPortableOutput> ownedPortableOutputPointer,
+int signInputs({
+  required ffi.Pointer<SignConfig> signConfigPointer,
 }) {
+  return _bindings.sign_inputs(signConfigPointer);
+}
+
+Output signInput({
+  required String signConfig,
+  required int network,
+  required int index,
+}) {
+  final signConfigPointer = decodeSignConfig(
+    network: network,
+    encodedSignConfig: signConfig,
+  );
+  final ownedPortableOutputPointer =
+      _bindings.sign_input(signConfigPointer, index).value;
+
   final hashPointer = _bindings.output_hash(ownedPortableOutputPointer);
   final hash = hashPointer.asTypedList(HASH_BYTES_LENGTH);
   calloc.free(hashPointer);
@@ -320,19 +337,6 @@ Output convertOutput({
     value: value,
     scriptPubKey: scriptPubKey,
   );
-}
-
-int signInputs({
-  required ffi.Pointer<SignConfig> signConfigPointer,
-}) {
-  return _bindings.sign_inputs(signConfigPointer);
-}
-
-ffi.Pointer<ffi.Pointer<OwnedPortableOutput>> signInput({
-  required ffi.Pointer<SignConfig> signConfigPointer,
-  required int index,
-}) {
-  return _bindings.sign_input(signConfigPointer, index);
 }
 
 int signPayments({
@@ -363,11 +367,8 @@ String addressForKeys({
   required ffi.Pointer<ThresholdKeysWrapper> keys,
 }) {
   final ownedString = _bindings.address_for_keys(network, keys);
-
   final string = ownedString.toDartString();
-
   freeOwnedString(ownedString);
-
   return string;
 }
 
@@ -375,11 +376,8 @@ String scriptPubKeyForKeys({
   required ffi.Pointer<ThresholdKeysWrapper> keys,
 }) {
   final ownedString = _bindings.script_pub_key_for_keys(keys);
-
   final string = ownedString.toDartString();
-
   freeOwnedString(ownedString);
-
   return string;
 }
 
@@ -411,7 +409,7 @@ int signFeePerWeight({
   return _bindings.sign_fee_per_weight(signConfigPointer);
 }
 
-ffi.Pointer<SignConfigRes> newSignConfig({
+String newSignConfig({
   required int network,
   required List<Output> outputs,
   required List<String> paymentAddresses,
@@ -475,12 +473,22 @@ ffi.Pointer<SignConfigRes> newSignConfig({
     feePerWeight,
   );
 
-  // TODO: frees
+  for (int i = 0; i < outputs.length; i++) {
+    calloc.free(outputsPointer[i].script_pubkey);
+  }
+  calloc.free(outputsPointer);
+
+  calloc.free(paymentAddressesPointer);
+  calloc.free(paymentAmountsPointer);
+  calloc.free(stringViewPointer.ref.ptr);
+  calloc.free(stringViewPointer);
 
   if (result.err != SUCCESS) {
     throw FrostdartException(errorCode: result.err);
   } else {
-    return result.value;
+    final string = result.value.ref.encoded.toDartString();
+    freeOwnedString(result.value.ref.encoded);
+    return string;
   }
 }
 
@@ -501,6 +509,7 @@ ffi.Pointer<SignConfig> decodeSignConfig({
     stringViewPointer.ref,
   );
 
+  calloc.free(stringViewPointer.ref.ptr);
   calloc.free(stringViewPointer);
 
   if (result.err != SUCCESS) {
@@ -512,8 +521,13 @@ ffi.Pointer<SignConfig> decodeSignConfig({
 
 ffi.Pointer<AttemptSignRes> attemptSign({
   required ffi.Pointer<ThresholdKeysWrapper> thresholdKeysWrapperPointer,
-  required ffi.Pointer<SignConfig> signConfigPointer,
+  required String signConfig,
+  required int network,
 }) {
+  final signConfigPointer = decodeSignConfig(
+    network: network,
+    encodedSignConfig: signConfig,
+  );
   final result = _bindings.attempt_sign(
     thresholdKeysWrapperPointer,
     signConfigPointer,
@@ -579,11 +593,8 @@ String completeSign({
     throw FrostdartException(errorCode: result.err);
   } else {
     final ownedString = result.value.ref;
-
     final string = ownedString.toDartString();
-
     freeOwnedString(ownedString);
-
     return string;
   }
 }
