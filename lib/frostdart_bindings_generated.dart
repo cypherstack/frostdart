@@ -8,7 +8,7 @@
 // ignore_for_file: type=lint
 import 'dart:ffi' as ffi;
 
-/// Bindings for `src/frostdart.h`.
+/// Bindings for `src/serai/hrf/header.h`.
 ///
 /// Regenerate bindings with `flutter pub run ffigen --config ffigen.yaml`.
 ///
@@ -317,19 +317,19 @@ class FrostdartBindings {
   late final _address_for_keys = _address_for_keysPtr.asFunction<
       OwnedString Function(int, ffi.Pointer<ThresholdKeysWrapper>)>();
 
-  OwnedString script_pub_key_for_keys(
+  OwnedString script_pubkey_for_keys(
     ffi.Pointer<ThresholdKeysWrapper> keys,
   ) {
-    return _script_pub_key_for_keys(
+    return _script_pubkey_for_keys(
       keys,
     );
   }
 
-  late final _script_pub_key_for_keysPtr = _lookup<
+  late final _script_pubkey_for_keysPtr = _lookup<
       ffi.NativeFunction<
           OwnedString Function(
-              ffi.Pointer<ThresholdKeysWrapper>)>>('script_pub_key_for_keys');
-  late final _script_pub_key_for_keys = _script_pub_key_for_keysPtr
+              ffi.Pointer<ThresholdKeysWrapper>)>>('script_pubkey_for_keys');
+  late final _script_pubkey_for_keys = _script_pubkey_for_keysPtr
       .asFunction<OwnedString Function(ffi.Pointer<ThresholdKeysWrapper>)>();
 
   ffi.Pointer<ffi.Uint8> output_hash(
