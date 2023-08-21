@@ -28,7 +28,6 @@ final FrostdartBindings _bindings = FrostdartBindings(_dylib);
 
 // =============================================================================
 // ===== wrapped functions to make them as close to pure dart as possible ======
-//TODO: check missing frees
 
 void freeOwnedString(OwnedString ownedString) {
   return _bindings.free_owned_string(ownedString);
@@ -314,11 +313,10 @@ Output signInput({
     encodedSignConfig: signConfig,
   );
   final ownedPortableOutputPointer =
-      _bindings.sign_input(signConfigPointer, index).value;
+      _bindings.sign_input(signConfigPointer, index);
 
   final hashPointer = _bindings.output_hash(ownedPortableOutputPointer);
   final hash = hashPointer.asTypedList(HASH_BYTES_LENGTH);
-  calloc.free(hashPointer);
 
   final vout = _bindings.output_vout(ownedPortableOutputPointer);
 
@@ -329,7 +327,6 @@ Output signInput({
 
   final scriptPubKeyPointer = _bindings.output_hash(ownedPortableOutputPointer);
   final scriptPubKey = scriptPubKeyPointer.asTypedList(scriptPubKeyLength);
-  calloc.free(scriptPubKeyPointer);
 
   return Output(
     hash: hash,

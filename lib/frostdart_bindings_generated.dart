@@ -421,7 +421,7 @@ class FrostdartBindings {
   late final _sign_inputs =
       _sign_inputsPtr.asFunction<int Function(ffi.Pointer<SignConfig>)>();
 
-  ffi.Pointer<ffi.Pointer<OwnedPortableOutput>> sign_input(
+  ffi.Pointer<OwnedPortableOutput> sign_input(
     ffi.Pointer<SignConfig> self,
     int i,
   ) {
@@ -433,10 +433,10 @@ class FrostdartBindings {
 
   late final _sign_inputPtr = _lookup<
       ffi.NativeFunction<
-          ffi.Pointer<ffi.Pointer<OwnedPortableOutput>> Function(
+          ffi.Pointer<OwnedPortableOutput> Function(
               ffi.Pointer<SignConfig>, ffi.UintPtr)>>('sign_input');
   late final _sign_input = _sign_inputPtr.asFunction<
-      ffi.Pointer<ffi.Pointer<OwnedPortableOutput>> Function(
+      ffi.Pointer<OwnedPortableOutput> Function(
           ffi.Pointer<SignConfig>, int)>();
 
   int sign_payments(
