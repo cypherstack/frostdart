@@ -270,6 +270,21 @@ ffi.Pointer<KeyGenRes> completeKeyGen({
   }
 }
 
+int getThresholdFromKeys({required String serializedKeys}) {
+  final keysPointer = deserializeKeys(keys: serializedKeys);
+  return _bindings.keys_threshold(keysPointer);
+}
+
+int getParticipantsCountFromKeys({required String serializedKeys}) {
+  final keysPointer = deserializeKeys(keys: serializedKeys);
+  return _bindings.keys_participants(keysPointer);
+}
+
+int getParticipantIndexFromKeys({required String serializedKeys}) {
+  final keysPointer = deserializeKeys(keys: serializedKeys);
+  return _bindings.keys_index(keysPointer);
+}
+
 String serializeKeys({
   required ffi.Pointer<ThresholdKeysWrapper> keys,
 }) {

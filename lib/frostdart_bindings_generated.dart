@@ -270,6 +270,51 @@ class FrostdartBindings {
       CResult_KeyGenRes Function(ffi.Pointer<MultisigConfigWithName>,
           SecretSharesRes, ffi.Pointer<StringView>, int)>();
 
+  int keys_threshold(
+    ffi.Pointer<ThresholdKeysWrapper> keys,
+  ) {
+    return _keys_threshold(
+      keys,
+    );
+  }
+
+  late final _keys_thresholdPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Uint16 Function(
+              ffi.Pointer<ThresholdKeysWrapper>)>>('keys_threshold');
+  late final _keys_threshold = _keys_thresholdPtr
+      .asFunction<int Function(ffi.Pointer<ThresholdKeysWrapper>)>();
+
+  int keys_participants(
+    ffi.Pointer<ThresholdKeysWrapper> keys,
+  ) {
+    return _keys_participants(
+      keys,
+    );
+  }
+
+  late final _keys_participantsPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Uint16 Function(
+              ffi.Pointer<ThresholdKeysWrapper>)>>('keys_participants');
+  late final _keys_participants = _keys_participantsPtr
+      .asFunction<int Function(ffi.Pointer<ThresholdKeysWrapper>)>();
+
+  int keys_index(
+    ffi.Pointer<ThresholdKeysWrapper> keys,
+  ) {
+    return _keys_index(
+      keys,
+    );
+  }
+
+  late final _keys_indexPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Uint16 Function(
+              ffi.Pointer<ThresholdKeysWrapper>)>>('keys_index');
+  late final _keys_index = _keys_indexPtr
+      .asFunction<int Function(ffi.Pointer<ThresholdKeysWrapper>)>();
+
   OwnedString serialize_keys(
     ffi.Pointer<ThresholdKeysWrapper> keys,
   ) {
