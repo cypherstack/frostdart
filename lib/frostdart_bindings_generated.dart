@@ -679,6 +679,202 @@ class FrostdartBindings {
           ffi.Pointer<TransactionSignatureMachineWrapper>,
           ffi.Pointer<StringView>,
           int)>();
+
+  int resharer_new_threshold(
+    ffi.Pointer<ResharerConfig> self,
+  ) {
+    return _resharer_new_threshold(
+      self,
+    );
+  }
+
+  late final _resharer_new_thresholdPtr = _lookup<
+          ffi.NativeFunction<ffi.Uint16 Function(ffi.Pointer<ResharerConfig>)>>(
+      'resharer_new_threshold');
+  late final _resharer_new_threshold = _resharer_new_thresholdPtr
+      .asFunction<int Function(ffi.Pointer<ResharerConfig>)>();
+
+  int resharer_resharers(
+    ffi.Pointer<ResharerConfig> self,
+  ) {
+    return _resharer_resharers(
+      self,
+    );
+  }
+
+  late final _resharer_resharersPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.UintPtr Function(
+              ffi.Pointer<ResharerConfig>)>>('resharer_resharers');
+  late final _resharer_resharers = _resharer_resharersPtr
+      .asFunction<int Function(ffi.Pointer<ResharerConfig>)>();
+
+  int resharer_resharer(
+    ffi.Pointer<ResharerConfig> self,
+    int i,
+  ) {
+    return _resharer_resharer(
+      self,
+      i,
+    );
+  }
+
+  late final _resharer_resharerPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Uint16 Function(
+              ffi.Pointer<ResharerConfig>, ffi.UintPtr)>>('resharer_resharer');
+  late final _resharer_resharer = _resharer_resharerPtr
+      .asFunction<int Function(ffi.Pointer<ResharerConfig>, int)>();
+
+  int resharer_new_participants(
+    ffi.Pointer<ResharerConfig> self,
+  ) {
+    return _resharer_new_participants(
+      self,
+    );
+  }
+
+  late final _resharer_new_participantsPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.UintPtr Function(
+              ffi.Pointer<ResharerConfig>)>>('resharer_new_participants');
+  late final _resharer_new_participants = _resharer_new_participantsPtr
+      .asFunction<int Function(ffi.Pointer<ResharerConfig>)>();
+
+  StringView resharer_new_participant(
+    ffi.Pointer<ResharerConfig> self,
+    int i,
+  ) {
+    return _resharer_new_participant(
+      self,
+      i,
+    );
+  }
+
+  late final _resharer_new_participantPtr = _lookup<
+      ffi.NativeFunction<
+          StringView Function(ffi.Pointer<ResharerConfig>,
+              ffi.UintPtr)>>('resharer_new_participant');
+  late final _resharer_new_participant = _resharer_new_participantPtr
+      .asFunction<StringView Function(ffi.Pointer<ResharerConfig>, int)>();
+
+  CResult_ResharerConfigRes new_resharer_config(
+    int new_threshold,
+    ffi.Pointer<ffi.Uint16> resharers,
+    int resharers_len,
+    ffi.Pointer<StringView> new_participants,
+    int new_participants_len,
+  ) {
+    return _new_resharer_config(
+      new_threshold,
+      resharers,
+      resharers_len,
+      new_participants,
+      new_participants_len,
+    );
+  }
+
+  late final _new_resharer_configPtr = _lookup<
+      ffi.NativeFunction<
+          CResult_ResharerConfigRes Function(
+              ffi.Uint16,
+              ffi.Pointer<ffi.Uint16>,
+              ffi.Uint16,
+              ffi.Pointer<StringView>,
+              ffi.Uint16)>>('new_resharer_config');
+  late final _new_resharer_config = _new_resharer_configPtr.asFunction<
+      CResult_ResharerConfigRes Function(
+          int, ffi.Pointer<ffi.Uint16>, int, ffi.Pointer<StringView>, int)>();
+
+  CResult_____ResharerConfig decode_resharer_config(
+    StringView config,
+  ) {
+    return _decode_resharer_config(
+      config,
+    );
+  }
+
+  late final _decode_resharer_configPtr = _lookup<
+          ffi.NativeFunction<CResult_____ResharerConfig Function(StringView)>>(
+      'decode_resharer_config');
+  late final _decode_resharer_config = _decode_resharer_configPtr
+      .asFunction<CResult_____ResharerConfig Function(StringView)>();
+
+  CResult_StartResharerRes start_resharer(
+    ffi.Pointer<ThresholdKeysWrapper> keys,
+    ffi.Pointer<ResharerConfig> config,
+  ) {
+    return _start_resharer(
+      keys,
+      config,
+    );
+  }
+
+  late final _start_resharerPtr = _lookup<
+      ffi.NativeFunction<
+          CResult_StartResharerRes Function(ffi.Pointer<ThresholdKeysWrapper>,
+              ffi.Pointer<ResharerConfig>)>>('start_resharer');
+  late final _start_resharer = _start_resharerPtr.asFunction<
+      CResult_StartResharerRes Function(
+          ffi.Pointer<ThresholdKeysWrapper>, ffi.Pointer<ResharerConfig>)>();
+
+  CResult_StartResharedRes start_reshared(
+    ffi.Pointer<MultisigConfig> multisig_config,
+    ffi.Pointer<ResharerConfig> reshared_config,
+    ffi.Pointer<StringView> resharer_starts,
+  ) {
+    return _start_reshared(
+      multisig_config,
+      reshared_config,
+      resharer_starts,
+    );
+  }
+
+  late final _start_resharedPtr = _lookup<
+      ffi.NativeFunction<
+          CResult_StartResharedRes Function(
+              ffi.Pointer<MultisigConfig>,
+              ffi.Pointer<ResharerConfig>,
+              ffi.Pointer<StringView>)>>('start_reshared');
+  late final _start_reshared = _start_resharedPtr.asFunction<
+      CResult_StartResharedRes Function(ffi.Pointer<MultisigConfig>,
+          ffi.Pointer<ResharerConfig>, ffi.Pointer<StringView>)>();
+
+  CResult_CompleteResharerRes complete_resharer(
+    StartResharerRes machine,
+    ffi.Pointer<StringView> encryption_keys_of_reshared_to,
+  ) {
+    return _complete_resharer(
+      machine,
+      encryption_keys_of_reshared_to,
+    );
+  }
+
+  late final _complete_resharerPtr = _lookup<
+      ffi.NativeFunction<
+          CResult_CompleteResharerRes Function(
+              StartResharerRes, ffi.Pointer<StringView>)>>('complete_resharer');
+  late final _complete_resharer = _complete_resharerPtr.asFunction<
+      CResult_CompleteResharerRes Function(
+          StartResharerRes, ffi.Pointer<StringView>)>();
+
+  CResult_CompleteResharedRes complete_reshared(
+    StartResharedRes machine,
+    ffi.Pointer<StringView> resharer_completes,
+  ) {
+    return _complete_reshared(
+      machine,
+      resharer_completes,
+    );
+  }
+
+  late final _complete_resharedPtr = _lookup<
+      ffi.NativeFunction<
+          CResult_CompleteResharedRes Function(
+              StartResharedRes, ffi.Pointer<StringView>)>>('complete_reshared');
+  late final _complete_reshared = _complete_resharedPtr.asFunction<
+      CResult_CompleteResharedRes Function(
+          StartResharedRes, ffi.Pointer<StringView>)>();
 }
 
 abstract class Network {
@@ -692,6 +888,8 @@ final class KeyMachineWrapper extends ffi.Opaque {}
 final class MultisigConfig extends ffi.Opaque {}
 
 final class OwnedPortableOutput extends ffi.Opaque {}
+
+final class ResharerConfig extends ffi.Opaque {}
 
 final class SecretShareMachineWrapper extends ffi.Opaque {}
 
@@ -868,6 +1066,68 @@ final class CResult_ContinueSignRes extends ffi.Struct {
 
 final class CResult_OwnedString extends ffi.Struct {
   external ffi.Pointer<OwnedString> value;
+
+  @ffi.Uint16()
+  external int err;
+}
+
+final class ResharerConfigRes extends ffi.Struct {
+  external ffi.Pointer<ResharerConfig> config;
+
+  external OwnedString encoded;
+}
+
+final class CResult_ResharerConfigRes extends ffi.Struct {
+  external ffi.Pointer<ResharerConfigRes> value;
+
+  @ffi.Uint16()
+  external int err;
+}
+
+final class CResult_____ResharerConfig extends ffi.Struct {
+  external ffi.Pointer<ffi.Pointer<ResharerConfig>> value;
+
+  @ffi.Uint16()
+  external int err;
+}
+
+final class StartResharerRes extends ffi.Struct {
+  external OwnedString encoded;
+}
+
+final class CResult_StartResharerRes extends ffi.Struct {
+  external ffi.Pointer<StartResharerRes> value;
+
+  @ffi.Uint16()
+  external int err;
+}
+
+final class StartResharedRes extends ffi.Struct {
+  external OwnedString encoded;
+}
+
+final class CResult_StartResharedRes extends ffi.Struct {
+  external ffi.Pointer<StartResharedRes> value;
+
+  @ffi.Uint16()
+  external int err;
+}
+
+final class CompleteResharerRes extends ffi.Struct {
+  external OwnedString encoded;
+}
+
+final class CResult_CompleteResharerRes extends ffi.Struct {
+  external ffi.Pointer<CompleteResharerRes> value;
+
+  @ffi.Uint16()
+  external int err;
+}
+
+final class CompleteResharedRes extends ffi.Opaque {}
+
+final class CResult_CompleteResharedRes extends ffi.Struct {
+  external ffi.Pointer<CompleteResharedRes> value;
 
   @ffi.Uint16()
   external int err;

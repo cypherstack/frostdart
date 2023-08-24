@@ -610,3 +610,224 @@ String completeSign({
     return string;
   }
 }
+
+int resharerNewThreshold({
+  required ffi.Pointer<ResharerConfig> resharerConfigPointer,
+}) {
+  return _bindings.resharer_new_threshold(resharerConfigPointer);
+}
+
+int resharerResharers({
+  required ffi.Pointer<ResharerConfig> resharerConfigPointer,
+}) {
+  return _bindings.resharer_resharers(resharerConfigPointer);
+}
+
+// TODO: should return a string?
+int resharerResharer({
+  required ffi.Pointer<ResharerConfig> resharerConfigPointer,
+  required int index,
+}) {
+  return _bindings.resharer_resharer(resharerConfigPointer, index);
+}
+
+int resharerNewParticipants({
+  required ffi.Pointer<ResharerConfig> resharerConfigPointer,
+}) {
+  return _bindings.resharer_new_participants(resharerConfigPointer);
+}
+
+String resharerNewParticipant({
+  required ffi.Pointer<ResharerConfig> resharerConfigPointer,
+  required int index,
+}) {
+  final stringView =
+      _bindings.resharer_new_participant(resharerConfigPointer, index);
+
+  final utf8Pointer = stringView.ptr.cast<Utf8>();
+  final string = utf8Pointer.toDartString(length: stringView.len);
+
+  calloc.free(utf8Pointer);
+
+  return string;
+}
+
+String newResharerConfig({
+  required int newThreshold,
+  required List<int> resharers,
+  required List<String> newParticipants,
+}) {
+  ffi.Pointer<ffi.Uint16> resharersPointer =
+      calloc<ffi.Uint16>(resharers.length);
+
+  for (int i = 0; i < resharers.length; i++) {
+    resharersPointer[i] = resharers[i];
+  }
+
+  ffi.Pointer<StringView> newParticipantsPointer = calloc<StringView>(
+    newParticipants.length,
+  );
+
+  for (int i = 0; i < newParticipants.length; i++) {
+    newParticipantsPointer[i].len = newParticipants[i].length;
+    newParticipantsPointer[i].ptr =
+        newParticipants[i].toNativeUtf8().cast<ffi.Uint8>();
+  }
+
+  final result = _bindings.new_resharer_config(
+    newThreshold,
+    resharersPointer,
+    resharers.length,
+    newParticipantsPointer,
+    newParticipants.length,
+  );
+
+  calloc.free(resharersPointer);
+  calloc.free(newParticipantsPointer);
+
+  if (result.err != SUCCESS) {
+    throw FrostdartException(errorCode: result.err);
+  } else {
+    final string = result.value.ref.encoded.toDartString();
+    freeOwnedString(result.value.ref.encoded);
+    return string;
+  }
+}
+
+ffi.Pointer<ResharerConfig> decodeResharerConfig({
+  required String resharerConfig,
+}) {
+  final stringViewPointer = calloc<StringView>();
+  stringViewPointer.ref.ptr = resharerConfig.toNativeUtf8().cast<ffi.Uint8>();
+  stringViewPointer.ref.len = resharerConfig.length;
+
+  final result = _bindings.decode_resharer_config(stringViewPointer.ref);
+
+  calloc.free(stringViewPointer.ref.ptr);
+  calloc.free(stringViewPointer);
+
+  if (result.err != SUCCESS) {
+    throw FrostdartException(errorCode: result.err);
+  } else {
+    // TODO fix Pointer<Pointer<>>
+    return result.value.value;
+  }
+}
+
+// TODO change return value?
+ffi.Pointer<StartResharerRes> startResharer({
+  required String serializedKeys,
+  required String config,
+}) {
+  final configPointer = decodeResharerConfig(resharerConfig: config);
+  final keysPointer = deserializeKeys(keys: serializedKeys);
+
+  final result = _bindings.start_resharer(keysPointer, configPointer);
+
+  if (result.err != SUCCESS) {
+    throw FrostdartException(errorCode: result.err);
+  } else {
+    // final string = result.value.ref.encoded.toDartString();
+    // freeOwnedString(result.value.ref.encoded);
+    // return string;
+    return result.value;
+  }
+}
+
+// TODO change return value?
+ffi.Pointer<StartResharedRes> startReshared({
+  required String multisigConfig,
+  required String resharerConfig,
+  required List<String> resharerStarts,
+}) {
+  final multisigConfigPointer = decodeMultisigConfig(
+    multisigConfig: multisigConfig,
+  );
+  final resharerConfigPointer = decodeResharerConfig(
+    resharerConfig: resharerConfig,
+  );
+
+  ffi.Pointer<StringView> resharerStartsPointer = calloc<StringView>(
+    resharerStarts.length,
+  );
+  for (int i = 0; i < resharerStarts.length; i++) {
+    resharerStartsPointer[i].len = resharerStarts[i].length;
+    resharerStartsPointer[i].ptr =
+        resharerStarts[i].toNativeUtf8().cast<ffi.Uint8>();
+  }
+
+  final result = _bindings.start_reshared(
+    multisigConfigPointer,
+    resharerConfigPointer,
+    resharerStartsPointer,
+  );
+
+  calloc.free(resharerStartsPointer);
+
+  if (result.err != SUCCESS) {
+    throw FrostdartException(errorCode: result.err);
+  } else {
+    // final string = result.value.ref.encoded.toDartString();
+    // freeOwnedString(result.value.ref.encoded);
+    // return string;
+    return result.value;
+  }
+}
+
+// TODO change return value
+CResult_CompleteResharerRes completeResharer({
+  required StartResharerRes machine,
+  required List<String> encryptionKeysOfResharedTo,
+}) {
+  ffi.Pointer<StringView> encryptionKeysOfResharedToPointer =
+      calloc<StringView>(
+    encryptionKeysOfResharedTo.length,
+  );
+  for (int i = 0; i < encryptionKeysOfResharedTo.length; i++) {
+    encryptionKeysOfResharedToPointer[i].len =
+        encryptionKeysOfResharedTo[i].length;
+    encryptionKeysOfResharedToPointer[i].ptr =
+        encryptionKeysOfResharedTo[i].toNativeUtf8().cast<ffi.Uint8>();
+  }
+
+  final result = _bindings.complete_resharer(
+    machine,
+    encryptionKeysOfResharedToPointer,
+  );
+
+  calloc.free(encryptionKeysOfResharedToPointer);
+
+  if (result.err != SUCCESS) {
+    throw FrostdartException(errorCode: result.err);
+  } else {
+    return result;
+  }
+}
+
+// TODO change return value
+CResult_CompleteResharedRes completeReshared({
+  required StartResharedRes machine,
+  required List<String> resharerCompletes,
+}) {
+  ffi.Pointer<StringView> resharerCompletesPointer = calloc<StringView>(
+    resharerCompletes.length,
+  );
+  for (int i = 0; i < resharerCompletes.length; i++) {
+    resharerCompletesPointer[i].len = resharerCompletes[i].length;
+    resharerCompletesPointer[i].ptr =
+        resharerCompletes[i].toNativeUtf8().cast<ffi.Uint8>();
+  }
+
+  final result = _bindings.complete_reshared(
+    machine,
+    resharerCompletesPointer,
+  );
+
+  calloc.free(resharerCompletesPointer);
+
+  if (result.err != SUCCESS) {
+    throw FrostdartException(errorCode: result.err);
+  } else {
+    return result;
+  }
+}
