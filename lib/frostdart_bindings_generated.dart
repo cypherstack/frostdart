@@ -204,7 +204,7 @@ class FrostdartBindings {
   late final _start_key_genPtr = _lookup<
       ffi.NativeFunction<
           CResult_StartKeyGenRes Function(ffi.Pointer<MultisigConfig>,
-              StringView, ffi.Uint16)>>('start_key_gen');
+              StringView, ffi.Uint8)>>('start_key_gen');
   late final _start_key_gen = _start_key_genPtr.asFunction<
       CResult_StartKeyGenRes Function(
           ffi.Pointer<MultisigConfig>, StringView, int)>();
@@ -231,7 +231,7 @@ class FrostdartBindings {
       ffi.NativeFunction<
           CResult_SecretSharesRes Function(
               ffi.Pointer<MultisigConfigWithName>,
-              ffi.Uint16,
+              ffi.Uint8,
               StringView,
               ffi.Pointer<SecretShareMachineWrapper>,
               ffi.Pointer<StringView>,
@@ -758,6 +758,21 @@ class FrostdartBindings {
   late final _resharer_new_participant = _resharer_new_participantPtr
       .asFunction<StringView Function(ffi.Pointer<ResharerConfig>, int)>();
 
+  ffi.Pointer<ffi.Uint8> resharer_salt(
+    ffi.Pointer<ResharerConfig> self,
+  ) {
+    return _resharer_salt(
+      self,
+    );
+  }
+
+  late final _resharer_saltPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<ffi.Uint8> Function(
+              ffi.Pointer<ResharerConfig>)>>('resharer_salt');
+  late final _resharer_salt = _resharer_saltPtr.asFunction<
+      ffi.Pointer<ffi.Uint8> Function(ffi.Pointer<ResharerConfig>)>();
+
   CResult_ResharerConfigRes new_resharer_config(
     int new_threshold,
     ffi.Pointer<ffi.Uint16> resharers,
@@ -786,7 +801,7 @@ class FrostdartBindings {
       CResult_ResharerConfigRes Function(
           int, ffi.Pointer<ffi.Uint16>, int, ffi.Pointer<StringView>, int)>();
 
-  CResult_____ResharerConfig decode_resharer_config(
+  CResult_ResharerConfig decode_resharer_config(
     StringView config,
   ) {
     return _decode_resharer_config(
@@ -794,11 +809,11 @@ class FrostdartBindings {
     );
   }
 
-  late final _decode_resharer_configPtr = _lookup<
-          ffi.NativeFunction<CResult_____ResharerConfig Function(StringView)>>(
-      'decode_resharer_config');
+  late final _decode_resharer_configPtr =
+      _lookup<ffi.NativeFunction<CResult_ResharerConfig Function(StringView)>>(
+          'decode_resharer_config');
   late final _decode_resharer_config = _decode_resharer_configPtr
-      .asFunction<CResult_____ResharerConfig Function(StringView)>();
+      .asFunction<CResult_ResharerConfig Function(StringView)>();
 
   CResult_StartResharerRes start_resharer(
     ffi.Pointer<ThresholdKeysWrapper> keys,
@@ -819,28 +834,26 @@ class FrostdartBindings {
           ffi.Pointer<ThresholdKeysWrapper>, ffi.Pointer<ResharerConfig>)>();
 
   CResult_StartResharedRes start_reshared(
-    ffi.Pointer<MultisigConfig> multisig_config,
-    ffi.Pointer<ResharerConfig> reshared_config,
+    ffi.Pointer<ResharerConfig> resharer_config,
+    StringView my_name,
     ffi.Pointer<StringView> resharer_starts,
   ) {
     return _start_reshared(
-      multisig_config,
-      reshared_config,
+      resharer_config,
+      my_name,
       resharer_starts,
     );
   }
 
   late final _start_resharedPtr = _lookup<
       ffi.NativeFunction<
-          CResult_StartResharedRes Function(
-              ffi.Pointer<MultisigConfig>,
-              ffi.Pointer<ResharerConfig>,
-              ffi.Pointer<StringView>)>>('start_reshared');
+          CResult_StartResharedRes Function(ffi.Pointer<ResharerConfig>,
+              StringView, ffi.Pointer<StringView>)>>('start_reshared');
   late final _start_reshared = _start_resharedPtr.asFunction<
-      CResult_StartResharedRes Function(ffi.Pointer<MultisigConfig>,
-          ffi.Pointer<ResharerConfig>, ffi.Pointer<StringView>)>();
+      CResult_StartResharedRes Function(
+          ffi.Pointer<ResharerConfig>, StringView, ffi.Pointer<StringView>)>();
 
-  CResult_CompleteResharerRes complete_resharer(
+  CResult_OwnedString complete_resharer(
     StartResharerRes machine,
     ffi.Pointer<StringView> encryption_keys_of_reshared_to,
   ) {
@@ -852,28 +865,28 @@ class FrostdartBindings {
 
   late final _complete_resharerPtr = _lookup<
       ffi.NativeFunction<
-          CResult_CompleteResharerRes Function(
+          CResult_OwnedString Function(
               StartResharerRes, ffi.Pointer<StringView>)>>('complete_resharer');
   late final _complete_resharer = _complete_resharerPtr.asFunction<
-      CResult_CompleteResharerRes Function(
+      CResult_OwnedString Function(
           StartResharerRes, ffi.Pointer<StringView>)>();
 
-  CResult_CompleteResharedRes complete_reshared(
-    StartResharedRes machine,
+  CResult_ThresholdKeysWrapper complete_reshared(
+    StartResharedRes prior,
     ffi.Pointer<StringView> resharer_completes,
   ) {
     return _complete_reshared(
-      machine,
+      prior,
       resharer_completes,
     );
   }
 
   late final _complete_resharedPtr = _lookup<
       ffi.NativeFunction<
-          CResult_CompleteResharedRes Function(
+          CResult_ThresholdKeysWrapper Function(
               StartResharedRes, ffi.Pointer<StringView>)>>('complete_reshared');
   late final _complete_reshared = _complete_resharedPtr.asFunction<
-      CResult_CompleteResharedRes Function(
+      CResult_ThresholdKeysWrapper Function(
           StartResharedRes, ffi.Pointer<StringView>)>();
 }
 
@@ -886,6 +899,10 @@ abstract class Network {
 final class KeyMachineWrapper extends ffi.Opaque {}
 
 final class MultisigConfig extends ffi.Opaque {}
+
+final class OpaqueResharedMachine extends ffi.Opaque {}
+
+final class OpaqueResharingMachine extends ffi.Opaque {}
 
 final class OwnedPortableOutput extends ffi.Opaque {}
 
@@ -936,14 +953,14 @@ final class MultisigConfigRes extends ffi.Struct {
 final class CResult_MultisigConfigRes extends ffi.Struct {
   external ffi.Pointer<MultisigConfigRes> value;
 
-  @ffi.Uint16()
+  @ffi.Uint8()
   external int err;
 }
 
 final class CResult_MultisigConfig extends ffi.Struct {
   external ffi.Pointer<MultisigConfig> value;
 
-  @ffi.Uint16()
+  @ffi.Uint8()
   external int err;
 }
 
@@ -960,7 +977,7 @@ final class StartKeyGenRes extends ffi.Struct {
 final class CResult_StartKeyGenRes extends ffi.Struct {
   external ffi.Pointer<StartKeyGenRes> value;
 
-  @ffi.Uint16()
+  @ffi.Uint8()
   external int err;
 }
 
@@ -975,7 +992,7 @@ final class SecretSharesRes extends ffi.Struct {
 final class CResult_SecretSharesRes extends ffi.Struct {
   external ffi.Pointer<SecretSharesRes> value;
 
-  @ffi.Uint16()
+  @ffi.Uint8()
   external int err;
 }
 
@@ -991,14 +1008,14 @@ final class KeyGenRes extends ffi.Struct {
 final class CResult_KeyGenRes extends ffi.Struct {
   external ffi.Pointer<KeyGenRes> value;
 
-  @ffi.Uint16()
+  @ffi.Uint8()
   external int err;
 }
 
 final class CResult_ThresholdKeysWrapper extends ffi.Struct {
   external ffi.Pointer<ThresholdKeysWrapper> value;
 
-  @ffi.Uint16()
+  @ffi.Uint8()
   external int err;
 }
 
@@ -1011,7 +1028,7 @@ final class SignConfigRes extends ffi.Struct {
 final class CResult_SignConfigRes extends ffi.Struct {
   external ffi.Pointer<SignConfigRes> value;
 
-  @ffi.Uint16()
+  @ffi.Uint8()
   external int err;
 }
 
@@ -1034,7 +1051,7 @@ final class PortableOutput extends ffi.Struct {
 final class CResult_SignConfig extends ffi.Struct {
   external ffi.Pointer<SignConfig> value;
 
-  @ffi.Uint16()
+  @ffi.Uint8()
   external int err;
 }
 
@@ -1047,7 +1064,7 @@ final class AttemptSignRes extends ffi.Struct {
 final class CResult_AttemptSignRes extends ffi.Struct {
   external ffi.Pointer<AttemptSignRes> value;
 
-  @ffi.Uint16()
+  @ffi.Uint8()
   external int err;
 }
 
@@ -1060,14 +1077,14 @@ final class ContinueSignRes extends ffi.Struct {
 final class CResult_ContinueSignRes extends ffi.Struct {
   external ffi.Pointer<ContinueSignRes> value;
 
-  @ffi.Uint16()
+  @ffi.Uint8()
   external int err;
 }
 
 final class CResult_OwnedString extends ffi.Struct {
   external ffi.Pointer<OwnedString> value;
 
-  @ffi.Uint16()
+  @ffi.Uint8()
   external int err;
 }
 
@@ -1080,56 +1097,46 @@ final class ResharerConfigRes extends ffi.Struct {
 final class CResult_ResharerConfigRes extends ffi.Struct {
   external ffi.Pointer<ResharerConfigRes> value;
 
-  @ffi.Uint16()
+  @ffi.Uint8()
   external int err;
 }
 
-final class CResult_____ResharerConfig extends ffi.Struct {
-  external ffi.Pointer<ffi.Pointer<ResharerConfig>> value;
+final class CResult_ResharerConfig extends ffi.Struct {
+  external ffi.Pointer<ResharerConfig> value;
 
-  @ffi.Uint16()
+  @ffi.Uint8()
   external int err;
 }
 
 final class StartResharerRes extends ffi.Struct {
+  @ffi.UintPtr()
+  external int new_participants_len;
+
+  external ffi.Pointer<OpaqueResharingMachine> machine;
+
   external OwnedString encoded;
 }
 
 final class CResult_StartResharerRes extends ffi.Struct {
   external ffi.Pointer<StartResharerRes> value;
 
-  @ffi.Uint16()
+  @ffi.Uint8()
   external int err;
 }
 
 final class StartResharedRes extends ffi.Struct {
+  @ffi.UintPtr()
+  external int resharers_len;
+
+  external ffi.Pointer<OpaqueResharedMachine> machine;
+
   external OwnedString encoded;
 }
 
 final class CResult_StartResharedRes extends ffi.Struct {
   external ffi.Pointer<StartResharedRes> value;
 
-  @ffi.Uint16()
-  external int err;
-}
-
-final class CompleteResharerRes extends ffi.Struct {
-  external OwnedString encoded;
-}
-
-final class CResult_CompleteResharerRes extends ffi.Struct {
-  external ffi.Pointer<CompleteResharerRes> value;
-
-  @ffi.Uint16()
-  external int err;
-}
-
-final class CompleteResharedRes extends ffi.Opaque {}
-
-final class CResult_CompleteResharedRes extends ffi.Struct {
-  external ffi.Pointer<CompleteResharedRes> value;
-
-  @ffi.Uint16()
+  @ffi.Uint8()
   external int err;
 }
 
@@ -1192,3 +1199,13 @@ const int TOO_LARGE_TRANSACTION_ERROR = 68;
 const int WRONG_KEYS_ERROR = 69;
 
 const int INVALID_PREPROCESS_ERROR = 70;
+
+const int INVALID_PARTICIPANTS_AMOUNT_ERROR = 81;
+
+const int DUPLICATED_PARTICIPANT_ERROR = 82;
+
+const int NOT_ENOUGH_RESHARERS_ERROR = 83;
+
+const int INVALID_RESHARED_MSG_ERROR = 84;
+
+const int INVALID_RESHARER_MSG_ERROR = 85;

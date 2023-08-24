@@ -623,7 +623,6 @@ int resharerResharers({
   return _bindings.resharer_resharers(resharerConfigPointer);
 }
 
-// TODO: should return a string?
 int resharerResharer({
   required ffi.Pointer<ResharerConfig> resharerConfigPointer,
   required int index,
@@ -709,13 +708,11 @@ ffi.Pointer<ResharerConfig> decodeResharerConfig({
   if (result.err != SUCCESS) {
     throw FrostdartException(errorCode: result.err);
   } else {
-    // TODO fix Pointer<Pointer<>>
-    return result.value.value;
+    return result.value;
   }
 }
 
-// TODO change return value?
-ffi.Pointer<StartResharerRes> startResharer({
+({ffi.Pointer<StartResharerRes> machine, String encoded}) startResharer({
   required String serializedKeys,
   required String config,
 }) {
@@ -727,22 +724,22 @@ ffi.Pointer<StartResharerRes> startResharer({
   if (result.err != SUCCESS) {
     throw FrostdartException(errorCode: result.err);
   } else {
-    // final string = result.value.ref.encoded.toDartString();
-    // freeOwnedString(result.value.ref.encoded);
-    // return string;
-    return result.value;
+    final string = result.value.ref.encoded.toDartString();
+    freeOwnedString(result.value.ref.encoded);
+
+    return (machine: result.value, encoded: string);
   }
 }
 
-// TODO change return value?
-ffi.Pointer<StartResharedRes> startReshared({
-  required String multisigConfig,
+({ffi.Pointer<StartResharedRes> machine, String encoded}) startReshared({
   required String resharerConfig,
+  required String myName,
   required List<String> resharerStarts,
 }) {
-  final multisigConfigPointer = decodeMultisigConfig(
-    multisigConfig: multisigConfig,
-  );
+  final stringViewPointer = calloc<StringView>();
+  stringViewPointer.ref.ptr = myName.toNativeUtf8().cast<ffi.Uint8>();
+  stringViewPointer.ref.len = myName.length;
+
   final resharerConfigPointer = decodeResharerConfig(
     resharerConfig: resharerConfig,
   );
@@ -757,25 +754,26 @@ ffi.Pointer<StartResharedRes> startReshared({
   }
 
   final result = _bindings.start_reshared(
-    multisigConfigPointer,
     resharerConfigPointer,
+    stringViewPointer.ref,
     resharerStartsPointer,
   );
 
   calloc.free(resharerStartsPointer);
+  calloc.free(stringViewPointer.ref.ptr);
+  calloc.free(stringViewPointer);
 
   if (result.err != SUCCESS) {
     throw FrostdartException(errorCode: result.err);
   } else {
-    // final string = result.value.ref.encoded.toDartString();
-    // freeOwnedString(result.value.ref.encoded);
-    // return string;
-    return result.value;
+    final string = result.value.ref.encoded.toDartString();
+    freeOwnedString(result.value.ref.encoded);
+
+    return (machine: result.value, encoded: string);
   }
 }
 
-// TODO change return value
-CResult_CompleteResharerRes completeResharer({
+String completeResharer({
   required StartResharerRes machine,
   required List<String> encryptionKeysOfResharedTo,
 }) {
@@ -800,13 +798,14 @@ CResult_CompleteResharerRes completeResharer({
   if (result.err != SUCCESS) {
     throw FrostdartException(errorCode: result.err);
   } else {
-    return result;
+    final string = result.value.ref.toDartString();
+    freeOwnedString(result.value.ref);
+    return string;
   }
 }
 
-// TODO change return value
-CResult_CompleteResharedRes completeReshared({
-  required StartResharedRes machine,
+String completeReshared({
+  required StartResharedRes prior,
   required List<String> resharerCompletes,
 }) {
   ffi.Pointer<StringView> resharerCompletesPointer = calloc<StringView>(
@@ -819,7 +818,7 @@ CResult_CompleteResharedRes completeReshared({
   }
 
   final result = _bindings.complete_reshared(
-    machine,
+    prior,
     resharerCompletesPointer,
   );
 
@@ -828,6 +827,6 @@ CResult_CompleteResharedRes completeReshared({
   if (result.err != SUCCESS) {
     throw FrostdartException(errorCode: result.err);
   } else {
-    return result;
+    return serializeKeys(keys: result.value);
   }
 }
