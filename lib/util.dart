@@ -79,6 +79,8 @@ String getErrorName(int errorCode) {
       return 'WRONG_KEYS_ERROR';
     case INVALID_PREPROCESS_ERROR:
       return 'INVALID_PREPROCESS_ERROR';
+    case FEE_ERROR:
+      return 'FEE_ERROR';
     case INVALID_PARTICIPANTS_AMOUNT_ERROR:
       return 'INVALID_PARTICIPANTS_AMOUNT_ERROR';
     case DUPLICATED_PARTICIPANT_ERROR:

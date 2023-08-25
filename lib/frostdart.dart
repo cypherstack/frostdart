@@ -169,6 +169,16 @@ ffi.Pointer<MultisigConfig> decodeMultisigConfig({
   }
 }
 
+String encodeMultisigConfig({
+  required ffi.Pointer<MultisigConfig> multisigConfigPointer,
+}) {
+  final ownedString = _bindings.encode_multisig_config(multisigConfigPointer);
+  final encoded = ownedString.toDartString();
+  freeOwnedString(ownedString);
+
+  return encoded;
+}
+
 ffi.Pointer<StartKeyGenRes> startKeyGen({
   required String multisigConfig,
   required String myName,
@@ -731,14 +741,20 @@ ffi.Pointer<ResharerConfig> decodeResharerConfig({
   }
 }
 
+/// [newMultisigName] doesn't matter but the config structure requires something here
 ({ffi.Pointer<StartResharedRes> machine, String encoded}) startReshared({
+  required String newMultisigName,
   required String resharerConfig,
   required String myName,
   required List<String> resharerStarts,
 }) {
-  final stringViewPointer = calloc<StringView>();
-  stringViewPointer.ref.ptr = myName.toNativeUtf8().cast<ffi.Uint8>();
-  stringViewPointer.ref.len = myName.length;
+  final newMultisigNamePointer = calloc<StringView>();
+  newMultisigNamePointer.ref.ptr = myName.toNativeUtf8().cast<ffi.Uint8>();
+  newMultisigNamePointer.ref.len = myName.length;
+
+  final myNamePointer = calloc<StringView>();
+  myNamePointer.ref.ptr = myName.toNativeUtf8().cast<ffi.Uint8>();
+  myNamePointer.ref.len = myName.length;
 
   final resharerConfigPointer = decodeResharerConfig(
     resharerConfig: resharerConfig,
@@ -754,14 +770,17 @@ ffi.Pointer<ResharerConfig> decodeResharerConfig({
   }
 
   final result = _bindings.start_reshared(
+    newMultisigNamePointer.ref,
     resharerConfigPointer,
-    stringViewPointer.ref,
+    myNamePointer.ref,
     resharerStartsPointer,
   );
 
   calloc.free(resharerStartsPointer);
-  calloc.free(stringViewPointer.ref.ptr);
-  calloc.free(stringViewPointer);
+  calloc.free(newMultisigNamePointer.ref.ptr);
+  calloc.free(newMultisigNamePointer);
+  calloc.free(myNamePointer.ref.ptr);
+  calloc.free(myNamePointer);
 
   if (result.err != SUCCESS) {
     throw FrostdartException(errorCode: result.err);
@@ -804,7 +823,11 @@ String completeResharer({
   }
 }
 
-String completeReshared({
+({
+  String multisigConfig,
+  String serializedKeys,
+  String resharedId,
+}) completeReshared({
   required StartResharedRes prior,
   required List<String> resharerCompletes,
 }) {
@@ -827,6 +850,16 @@ String completeReshared({
   if (result.err != SUCCESS) {
     throw FrostdartException(errorCode: result.err);
   } else {
-    return serializeKeys(keys: result.value);
+    final id = result.value.ref.id.toDartString();
+    freeOwnedString(result.value.ref.id);
+    return (
+      serializedKeys: serializeKeys(
+        keys: result.value.ref.keys,
+      ),
+      multisigConfig: encodeMultisigConfig(
+        multisigConfigPointer: result.value.ref.config,
+      ),
+      resharedId: id,
+    );
   }
 }
