@@ -131,20 +131,6 @@ class FrostdartBindings {
   late final _encode_multisig_config = _encode_multisig_configPtr
       .asFunction<OwnedString Function(ffi.Pointer<MultisigConfig>)>();
 
-  CResult_MultisigConfig decode_multisig_config(
-    StringView str,
-  ) {
-    return _decode_multisig_config(
-      str,
-    );
-  }
-
-  late final _decode_multisig_configPtr =
-      _lookup<ffi.NativeFunction<CResult_MultisigConfig Function(StringView)>>(
-          'decode_multisig_config');
-  late final _decode_multisig_config = _decode_multisig_configPtr
-      .asFunction<CResult_MultisigConfig Function(StringView)>();
-
   ffi.Pointer<MultisigConfig> multisig_config(
     ffi.Pointer<MultisigConfigWithName> self,
   ) {
@@ -203,6 +189,20 @@ class FrostdartBindings {
   late final _new_multisig_config = _new_multisig_configPtr.asFunction<
       CResult_MultisigConfigRes Function(
           ffi.Pointer<ffi.Uint8>, int, int, ffi.Pointer<StringView>, int)>();
+
+  CResult_MultisigConfig decode_multisig_config(
+    StringView config,
+  ) {
+    return _decode_multisig_config(
+      config,
+    );
+  }
+
+  late final _decode_multisig_configPtr =
+      _lookup<ffi.NativeFunction<CResult_MultisigConfig Function(StringView)>>(
+          'decode_multisig_config');
+  late final _decode_multisig_config = _decode_multisig_configPtr
+      .asFunction<CResult_MultisigConfig Function(StringView)>();
 
   CResult_StartKeyGenRes start_key_gen(
     ffi.Pointer<MultisigConfig> config,
@@ -958,13 +958,6 @@ final class StringView extends ffi.Struct {
   external int len;
 }
 
-final class CResult_MultisigConfig extends ffi.Struct {
-  external ffi.Pointer<MultisigConfig> value;
-
-  @ffi.Uint8()
-  external int err;
-}
-
 final class MultisigConfigWithName extends ffi.Struct {
   external ffi.Pointer<MultisigConfig> config;
 
@@ -979,6 +972,13 @@ final class MultisigConfigRes extends ffi.Struct {
 
 final class CResult_MultisigConfigRes extends ffi.Struct {
   external ffi.Pointer<MultisigConfigRes> value;
+
+  @ffi.Uint8()
+  external int err;
+}
+
+final class CResult_MultisigConfig extends ffi.Struct {
+  external ffi.Pointer<MultisigConfig> value;
 
   @ffi.Uint8()
   external int err;
