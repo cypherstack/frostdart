@@ -741,6 +741,7 @@ ffi.Pointer<ResharerConfig> decodeResharerConfig({
   }
 }
 
+/// expects [resharerStarts] of length equal to resharers.
 /// [newMultisigName] doesn't matter but the config structure requires something here
 ({ffi.Pointer<StartResharedRes> machine, String encoded}) startReshared({
   required String newMultisigName,
@@ -792,6 +793,7 @@ ffi.Pointer<ResharerConfig> decodeResharerConfig({
   }
 }
 
+/// expects [encryptionKeysOfResharedTo] of length equal to new participants
 String completeResharer({
   required StartResharerRes machine,
   required List<String> encryptionKeysOfResharedTo,
@@ -823,6 +825,7 @@ String completeResharer({
   }
 }
 
+/// expects [resharerCompletes] of length equal to resharers
 ({
   String multisigConfig,
   String serializedKeys,
