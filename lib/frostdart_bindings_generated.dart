@@ -1150,6 +1150,9 @@ final class StartResharedRes extends ffi.Struct {
 
   external ffi.Pointer<MultisigConfig> multisig_config;
 
+  @ffi.Uint16()
+  external int my_i;
+
   external ffi.Pointer<OpaqueResharedMachine> machine;
 
   external OwnedString encoded;
