@@ -662,6 +662,17 @@ String resharerNewParticipant({
   return string;
 }
 
+Uint8List resharerSalt({
+  required String resharerConfig,
+}) {
+  final resharerConfigPointer =
+      decodeResharerConfig(resharerConfig: resharerConfig);
+  final uint8Pointer = _bindings.resharer_salt(resharerConfigPointer);
+  final bytes = uint8Pointer.asTypedList(SALT_BYTES_LENGTH);
+
+  return bytes;
+}
+
 String newResharerConfig({
   required int newThreshold,
   required List<int> resharers,
