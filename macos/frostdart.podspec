@@ -14,7 +14,6 @@ A new Flutter project.
   s.author           = { 'Your Company' => 'email@example.com' }
 
   s.source           = { :path => '.' }
-  s.source_files     = 'Classes/**/*'
   s.static_framework = true
   s.vendored_libraries = "**/*.a"
   s.dependency 'FlutterMacOS'
