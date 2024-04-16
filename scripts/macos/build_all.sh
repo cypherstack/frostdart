@@ -4,11 +4,12 @@ ROOT_DIR="$(pwd)/../.."
 
 export MACOSX_DEPLOYMENT_TARGET=10.14
 
-mkdir -p build
-
 rm -rf "$ROOT_DIR"/src/serai/target
 
 cd "$ROOT_DIR"/src/serai/hrf || exit
+
+# attempt to rename crate in case it was renamed locally in order to build for ios
+sed -i .bak 's/frostdart/hrf-api/' cargo.toml
 
 echo "Building macos frostdart"
 
