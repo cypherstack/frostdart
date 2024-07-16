@@ -336,7 +336,6 @@ Output signInput({
   required String signConfig,
   required int network,
   required int index,
-  required AddressDerivationData addressDerivationData,
 }) {
   final signConfigPointer = decodeSignConfig(
     network: network,
@@ -363,7 +362,7 @@ Output signInput({
     vout: vout,
     value: value,
     scriptPubKey: scriptPubKey,
-    addressDerivationData: addressDerivationData,
+    addressDerivationData: null,
   );
 }
 
@@ -464,9 +463,9 @@ String newSignConfig({
 
   final outputsPointer = calloc<PortableOutput>(outputs.length);
   for (int i = 0; i < outputs.length; i++) {
-    outputsPointer[i].account = outputs[i].addressDerivationData.account;
-    outputsPointer[i].change = outputs[i].addressDerivationData.change;
-    outputsPointer[i].address = outputs[i].addressDerivationData.index;
+    outputsPointer[i].account = outputs[i].addressDerivationData!.account;
+    outputsPointer[i].change = outputs[i].addressDerivationData!.change;
+    outputsPointer[i].address = outputs[i].addressDerivationData!.index;
 
     outputsPointer[i].vout = outputs[i].vout;
     outputsPointer[i].value = outputs[i].value;

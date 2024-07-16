@@ -8,7 +8,7 @@ class Output {
   final int value;
   final Uint8List scriptPubKey;
 
-  final AddressDerivationData addressDerivationData;
+  final AddressDerivationData? addressDerivationData;
 
   Output({
     required this.hash,
