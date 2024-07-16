@@ -28,8 +28,15 @@ abstract class FrostSampleRunner {
               "9a4885239b97aa945d8c3a4e560ad2067074825122dd036a7aa3a78f3f5c"
               "f6e2109a4885239b97aa945d8c3a4e560ad2067074825122dd");
 
-      final address =
-          addressForKeys(network: network, keys: deserializedKeysAlice);
+      final address = addressForKeys(
+        network: network,
+        keys: deserializedKeysAlice,
+        addressDerivationData: (
+          account: 0,
+          change: false,
+          index: 0,
+        ),
+      );
 
       debugPrint("Address: $address");
 
@@ -44,6 +51,11 @@ abstract class FrostSampleRunner {
             ),
             vout: 1,
             value: 200000000,
+            addressDerivationData: (
+              account: 0,
+              change: false,
+              index: 0,
+            ),
             scriptPubKey: Uint8List.fromList(
               hexStringToList(
                 "5120105968eaa94d798d554d76a381fd65060696c3685ca1434e4d3ba82bd3f5bde0",

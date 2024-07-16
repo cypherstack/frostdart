@@ -78,9 +78,9 @@ class FrostdartBindings {
   }
 
   late final _multisig_participantsPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.UintPtr Function(
-              ffi.Pointer<MultisigConfig>)>>('multisig_participants');
+          ffi
+          .NativeFunction<ffi.UintPtr Function(ffi.Pointer<MultisigConfig>)>>(
+      'multisig_participants');
   late final _multisig_participants = _multisig_participantsPtr
       .asFunction<int Function(ffi.Pointer<MultisigConfig>)>();
 
@@ -125,9 +125,9 @@ class FrostdartBindings {
   }
 
   late final _encode_multisig_configPtr = _lookup<
-      ffi.NativeFunction<
-          OwnedString Function(
-              ffi.Pointer<MultisigConfig>)>>('encode_multisig_config');
+          ffi
+          .NativeFunction<OwnedString Function(ffi.Pointer<MultisigConfig>)>>(
+      'encode_multisig_config');
   late final _encode_multisig_config = _encode_multisig_configPtr
       .asFunction<OwnedString Function(ffi.Pointer<MultisigConfig>)>();
 
@@ -354,28 +354,39 @@ class FrostdartBindings {
   }
 
   late final _deserialize_keysPtr = _lookup<
-      ffi.NativeFunction<
-          CResult_ThresholdKeysWrapper Function(
-              StringView)>>('deserialize_keys');
+          ffi
+          .NativeFunction<CResult_ThresholdKeysWrapper Function(StringView)>>(
+      'deserialize_keys');
   late final _deserialize_keys = _deserialize_keysPtr
       .asFunction<CResult_ThresholdKeysWrapper Function(StringView)>();
 
-  OwnedString address_for_keys(
+  CResult_OwnedString address_for_keys(
     int network,
     ffi.Pointer<ThresholdKeysWrapper> keys,
+    int account,
+    int address,
+    bool change,
   ) {
     return _address_for_keys(
       network,
       keys,
+      account,
+      address,
+      change,
     );
   }
 
   late final _address_for_keysPtr = _lookup<
       ffi.NativeFunction<
-          OwnedString Function(ffi.Int32,
-              ffi.Pointer<ThresholdKeysWrapper>)>>('address_for_keys');
+          CResult_OwnedString Function(
+              ffi.Int32,
+              ffi.Pointer<ThresholdKeysWrapper>,
+              ffi.Uint32,
+              ffi.Uint32,
+              ffi.Bool)>>('address_for_keys');
   late final _address_for_keys = _address_for_keysPtr.asFunction<
-      OwnedString Function(int, ffi.Pointer<ThresholdKeysWrapper>)>();
+      CResult_OwnedString Function(
+          int, ffi.Pointer<ThresholdKeysWrapper>, int, int, bool)>();
 
   OwnedString script_pubkey_for_keys(
     ffi.Pointer<ThresholdKeysWrapper> keys,
@@ -623,9 +634,9 @@ class FrostdartBindings {
   }
 
   late final _decode_sign_configPtr = _lookup<
-      ffi.NativeFunction<
-          CResult_SignConfig Function(
-              ffi.Int32, StringView)>>('decode_sign_config');
+          ffi
+          .NativeFunction<CResult_SignConfig Function(ffi.Int32, StringView)>>(
+      'decode_sign_config');
   late final _decode_sign_config = _decode_sign_configPtr
       .asFunction<CResult_SignConfig Function(int, StringView)>();
 
@@ -718,9 +729,9 @@ class FrostdartBindings {
   }
 
   late final _resharer_resharersPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.UintPtr Function(
-              ffi.Pointer<ResharerConfig>)>>('resharer_resharers');
+          ffi
+          .NativeFunction<ffi.UintPtr Function(ffi.Pointer<ResharerConfig>)>>(
+      'resharer_resharers');
   late final _resharer_resharers = _resharer_resharersPtr
       .asFunction<int Function(ffi.Pointer<ResharerConfig>)>();
 
@@ -750,9 +761,9 @@ class FrostdartBindings {
   }
 
   late final _resharer_new_participantsPtr = _lookup<
-      ffi.NativeFunction<
-          ffi.UintPtr Function(
-              ffi.Pointer<ResharerConfig>)>>('resharer_new_participants');
+          ffi
+          .NativeFunction<ffi.UintPtr Function(ffi.Pointer<ResharerConfig>)>>(
+      'resharer_new_participants');
   late final _resharer_new_participants = _resharer_new_participantsPtr
       .asFunction<int Function(ffi.Pointer<ResharerConfig>)>();
 
@@ -1066,6 +1077,15 @@ final class PortableOutput extends ffi.Struct {
 
   @ffi.UintPtr()
   external int script_pubkey_len;
+
+  @ffi.Uint32()
+  external int account;
+
+  @ffi.Uint32()
+  external int address;
+
+  @ffi.Bool()
+  external bool change;
 }
 
 final class CResult_SignConfig extends ffi.Struct {
