@@ -412,14 +412,14 @@ String addressForKeys({
   }
 }
 
-String scriptPubKeyForKeys({
-  required ffi.Pointer<ThresholdKeysWrapper> keys,
-}) {
-  final ownedString = _bindings.script_pubkey_for_keys(keys);
-  final string = ownedString.toDartString();
-  freeOwnedString(ownedString);
-  return string;
-}
+// String scriptPubKeyForKeys({
+//   required ffi.Pointer<ThresholdKeysWrapper> keys,
+// }) {
+//   final ownedString = _bindings.script_pubkey_for_keys(keys);
+//   final string = ownedString.toDartString();
+//   freeOwnedString(ownedString);
+//   return string;
+// }
 
 int signPaymentAmount({
   required ffi.Pointer<SignConfig> signConfigPointer,
