@@ -362,6 +362,7 @@ Output signInput({
     vout: vout,
     value: value,
     scriptPubKey: scriptPubKey,
+    addressDerivationData: null,
   );
 }
 
@@ -391,21 +392,34 @@ String signPaymentAddress({
 String addressForKeys({
   required int network,
   required ffi.Pointer<ThresholdKeysWrapper> keys,
+  required AddressDerivationData addressDerivationData,
 }) {
-  final ownedString = _bindings.address_for_keys(network, keys);
-  final string = ownedString.toDartString();
-  freeOwnedString(ownedString);
-  return string;
+  final result = _bindings.address_for_keys(
+    network,
+    keys,
+    addressDerivationData.account,
+    addressDerivationData.index,
+    addressDerivationData.change,
+  );
+  if (result.err != SUCCESS) {
+    throw FrostdartException(errorCode: result.err);
+  } else {
+    final ownedString = result.value.ref;
+    final string = ownedString.toDartString();
+    freeOwnedString(ownedString);
+    calloc.free(result.value);
+    return string;
+  }
 }
 
-String scriptPubKeyForKeys({
-  required ffi.Pointer<ThresholdKeysWrapper> keys,
-}) {
-  final ownedString = _bindings.script_pubkey_for_keys(keys);
-  final string = ownedString.toDartString();
-  freeOwnedString(ownedString);
-  return string;
-}
+// String scriptPubKeyForKeys({
+//   required ffi.Pointer<ThresholdKeysWrapper> keys,
+// }) {
+//   final ownedString = _bindings.script_pubkey_for_keys(keys);
+//   final string = ownedString.toDartString();
+//   freeOwnedString(ownedString);
+//   return string;
+// }
 
 int signPaymentAmount({
   required ffi.Pointer<SignConfig> signConfigPointer,
@@ -449,6 +463,10 @@ String newSignConfig({
 
   final outputsPointer = calloc<PortableOutput>(outputs.length);
   for (int i = 0; i < outputs.length; i++) {
+    outputsPointer[i].account = outputs[i].addressDerivationData!.account;
+    outputsPointer[i].change = outputs[i].addressDerivationData!.change;
+    outputsPointer[i].address = outputs[i].addressDerivationData!.index;
+
     outputsPointer[i].vout = outputs[i].vout;
     outputsPointer[i].value = outputs[i].value;
 
