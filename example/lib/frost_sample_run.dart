@@ -36,11 +36,13 @@ abstract class FrostSampleRunner {
           change: false,
           index: 0,
         ),
+        secure: false,
       );
 
       debugPrint("Address: $address");
 
       final encodedConfig = newSignConfig(
+        thresholdKeysWrapperPointer: deserializedKeysAlice,
         network: network,
         outputs: [
           Output(

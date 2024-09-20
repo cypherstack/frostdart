@@ -333,11 +333,13 @@ int signInputs({
 }
 
 Output signInput({
+  required ffi.Pointer<ThresholdKeysWrapper> thresholdKeysWrapperPointer,
   required String signConfig,
   required int network,
   required int index,
 }) {
   final signConfigPointer = decodeSignConfig(
+    thresholdKeysWrapperPointer: thresholdKeysWrapperPointer,
     network: network,
     encodedSignConfig: signConfig,
   );
@@ -393,6 +395,7 @@ String addressForKeys({
   required int network,
   required ffi.Pointer<ThresholdKeysWrapper> keys,
   required AddressDerivationData addressDerivationData,
+  required bool secure,
 }) {
   final result = _bindings.address_for_keys(
     network,
@@ -400,6 +403,7 @@ String addressForKeys({
     addressDerivationData.account,
     addressDerivationData.index,
     addressDerivationData.change,
+    secure,
   );
   if (result.err != SUCCESS) {
     throw FrostdartException(errorCode: result.err);
@@ -450,6 +454,7 @@ int signFeePerWeight({
 }
 
 String newSignConfig({
+  required ffi.Pointer<ThresholdKeysWrapper> thresholdKeysWrapperPointer,
   required int network,
   required List<Output> outputs,
   required List<String> paymentAddresses,
@@ -507,6 +512,7 @@ String newSignConfig({
   stringViewPointer.ref.len = change.length;
 
   final result = _bindings.new_sign_config(
+    thresholdKeysWrapperPointer,
     network,
     outputsPointer,
     outputs.length,
@@ -537,6 +543,7 @@ String newSignConfig({
 }
 
 ffi.Pointer<SignConfig> decodeSignConfig({
+  required ffi.Pointer<ThresholdKeysWrapper> thresholdKeysWrapperPointer,
   required int network,
   required String encodedSignConfig,
 }) {
@@ -549,6 +556,7 @@ ffi.Pointer<SignConfig> decodeSignConfig({
   stringViewPointer.ref.len = encodedSignConfig.length;
 
   final result = _bindings.decode_sign_config(
+    thresholdKeysWrapperPointer,
     network,
     stringViewPointer.ref,
   );
@@ -569,6 +577,7 @@ ffi.Pointer<AttemptSignRes> attemptSign({
   required int network,
 }) {
   final signConfigPointer = decodeSignConfig(
+    thresholdKeysWrapperPointer: thresholdKeysWrapperPointer,
     network: network,
     encodedSignConfig: signConfig,
   );
