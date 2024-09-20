@@ -366,6 +366,7 @@ class FrostdartBindings {
     int account,
     int address,
     bool change,
+    bool secure,
   ) {
     return _address_for_keys(
       network,
@@ -373,6 +374,7 @@ class FrostdartBindings {
       account,
       address,
       change,
+      secure,
     );
   }
 
@@ -383,25 +385,35 @@ class FrostdartBindings {
               ffi.Pointer<ThresholdKeysWrapper>,
               ffi.Uint32,
               ffi.Uint32,
+              ffi.Bool,
               ffi.Bool)>>('address_for_keys');
   late final _address_for_keys = _address_for_keysPtr.asFunction<
       CResult_OwnedString Function(
-          int, ffi.Pointer<ThresholdKeysWrapper>, int, int, bool)>();
+          int, ffi.Pointer<ThresholdKeysWrapper>, int, int, bool, bool)>();
 
   OwnedString script_pubkey_for_keys(
     ffi.Pointer<ThresholdKeysWrapper> keys,
+    int account,
+    int address,
+    bool change,
+    bool secure,
   ) {
     return _script_pubkey_for_keys(
       keys,
+      account,
+      address,
+      change,
+      secure,
     );
   }
 
   late final _script_pubkey_for_keysPtr = _lookup<
       ffi.NativeFunction<
-          OwnedString Function(
-              ffi.Pointer<ThresholdKeysWrapper>)>>('script_pubkey_for_keys');
-  late final _script_pubkey_for_keys = _script_pubkey_for_keysPtr
-      .asFunction<OwnedString Function(ffi.Pointer<ThresholdKeysWrapper>)>();
+          OwnedString Function(ffi.Pointer<ThresholdKeysWrapper>, ffi.Uint32,
+              ffi.Uint32, ffi.Bool, ffi.Bool)>>('script_pubkey_for_keys');
+  late final _script_pubkey_for_keys = _script_pubkey_for_keysPtr.asFunction<
+      OwnedString Function(
+          ffi.Pointer<ThresholdKeysWrapper>, int, int, bool, bool)>();
 
   ffi.Pointer<ffi.Uint8> output_hash(
     ffi.Pointer<OwnedPortableOutput> self,
@@ -587,6 +599,7 @@ class FrostdartBindings {
       .asFunction<int Function(ffi.Pointer<SignConfig>)>();
 
   CResult_SignConfigRes new_sign_config(
+    ffi.Pointer<ThresholdKeysWrapper> keys,
     int network,
     ffi.Pointer<PortableOutput> outputs,
     int outputs_len,
@@ -597,6 +610,7 @@ class FrostdartBindings {
     int fee_per_weight,
   ) {
     return _new_sign_config(
+      keys,
       network,
       outputs,
       outputs_len,
@@ -611,6 +625,7 @@ class FrostdartBindings {
   late final _new_sign_configPtr = _lookup<
       ffi.NativeFunction<
           CResult_SignConfigRes Function(
+              ffi.Pointer<ThresholdKeysWrapper>,
               ffi.Int32,
               ffi.Pointer<PortableOutput>,
               ffi.UintPtr,
@@ -620,25 +635,36 @@ class FrostdartBindings {
               StringView,
               ffi.Uint64)>>('new_sign_config');
   late final _new_sign_config = _new_sign_configPtr.asFunction<
-      CResult_SignConfigRes Function(int, ffi.Pointer<PortableOutput>, int, int,
-          ffi.Pointer<StringView>, ffi.Pointer<ffi.Uint64>, StringView, int)>();
+      CResult_SignConfigRes Function(
+          ffi.Pointer<ThresholdKeysWrapper>,
+          int,
+          ffi.Pointer<PortableOutput>,
+          int,
+          int,
+          ffi.Pointer<StringView>,
+          ffi.Pointer<ffi.Uint64>,
+          StringView,
+          int)>();
 
   CResult_SignConfig decode_sign_config(
+    ffi.Pointer<ThresholdKeysWrapper> keys,
     int network,
     StringView encoded,
   ) {
     return _decode_sign_config(
+      keys,
       network,
       encoded,
     );
   }
 
   late final _decode_sign_configPtr = _lookup<
-          ffi
-          .NativeFunction<CResult_SignConfig Function(ffi.Int32, StringView)>>(
-      'decode_sign_config');
-  late final _decode_sign_config = _decode_sign_configPtr
-      .asFunction<CResult_SignConfig Function(int, StringView)>();
+      ffi.NativeFunction<
+          CResult_SignConfig Function(ffi.Pointer<ThresholdKeysWrapper>,
+              ffi.Int32, StringView)>>('decode_sign_config');
+  late final _decode_sign_config = _decode_sign_configPtr.asFunction<
+      CResult_SignConfig Function(
+          ffi.Pointer<ThresholdKeysWrapper>, int, StringView)>();
 
   CResult_AttemptSignRes attempt_sign(
     ffi.Pointer<ThresholdKeysWrapper> keys,
@@ -1086,6 +1112,9 @@ final class PortableOutput extends ffi.Struct {
 
   @ffi.Bool()
   external bool change;
+
+  @ffi.Bool()
+  external bool secure;
 }
 
 final class CResult_SignConfig extends ffi.Struct {
