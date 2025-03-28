@@ -46,7 +46,13 @@ sed -i "s/\[dependencies\]/\[dependencies\]\\
 openssl = { version = \"0.10\", features = [\"vendored\"] }/" Cargo.toml
 
 rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-android x86_64-linux-android
-cargo ndk -t armeabi-v7a -t arm64-v8a -t x86_64 -o "$ROOT_DIR"/android/src/main/jniLibs build --release
+cargo ndk \
+  --target armv7-linux-androideabi \
+  --target aarch64-linux-android \
+  --target x86_64-linux-android \
+  --output-dir "$ROOT_DIR"/android/src/main/jniLibs \
+  --platform 21 \
+  build --release
 
 mv "$ROOT_DIR"/android/src/main/jniLibs/armeabi-v7a/libhrf_api.so "$ROOT_DIR"/android/src/main/jniLibs/armeabi-v7a/frostdart.so
 mv "$ROOT_DIR"/android/src/main/jniLibs/arm64-v8a/libhrf_api.so "$ROOT_DIR"/android/src/main/jniLibs/arm64-v8a/frostdart.so
