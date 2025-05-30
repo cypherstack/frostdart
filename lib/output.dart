@@ -1,6 +1,11 @@
 import 'dart:typed_data';
 
-typedef AddressDerivationData = ({int account, bool change, int index});
+typedef AddressDerivationData = ({
+  int account,
+  bool change,
+  int index,
+  bool secure
+});
 
 class Output {
   final Uint8List hash;
