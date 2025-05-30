@@ -35,8 +35,9 @@ abstract class FrostSampleRunner {
           account: 0,
           change: false,
           index: 0,
+          secure: true,
         ),
-        secure: false,
+        secure: true,
       );
 
       debugPrint("Address: $address");
@@ -57,6 +58,7 @@ abstract class FrostSampleRunner {
               account: 0,
               change: false,
               index: 0,
+              secure: true,
             ),
             scriptPubKey: Uint8List.fromList(
               hexStringToList(

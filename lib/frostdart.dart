@@ -471,6 +471,7 @@ String newSignConfig({
     outputsPointer[i].account = outputs[i].addressDerivationData!.account;
     outputsPointer[i].change = outputs[i].addressDerivationData!.change;
     outputsPointer[i].address = outputs[i].addressDerivationData!.index;
+    outputsPointer[i].secure = outputs[i].addressDerivationData!.secure;
 
     outputsPointer[i].vout = outputs[i].vout;
     outputsPointer[i].value = outputs[i].value;
