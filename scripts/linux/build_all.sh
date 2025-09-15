@@ -6,7 +6,7 @@ mkdir -p build
 
 rm -rf "$ROOT_DIR"/src/serai/target
 
-cd "$ROOT_DIR"/src/serai/hrf || exit
+cd "$ROOT_DIR"/src/serai || exit
 if [ "$IS_ARM" = true ]  ; then
     echo "Building arm frostdart"
     cargo +1.71.0 build --target aarch64-unknown-linux-gnu --release --lib
