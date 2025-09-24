@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export API=25
+export API=28
 
 WORKDIR="$(pwd)/"build
 export WORKDIR
@@ -9,11 +9,11 @@ ROOT_DIR="$(pwd)/../.."
 
 mkdir -p build
 
-export ANDROID_NDK_ZIP=${WORKDIR}/android-ndk-r25c.zip
-export ANDROID_NDK_ROOT=${WORKDIR}/android-ndk-r25c
-ANDROID_NDK_SHA256="53af80a1cce9144025b81c78c8cd556bff42bd0e"
+export ANDROID_NDK_ZIP=${WORKDIR}/android-ndk-r28c.zip
+export ANDROID_NDK_ROOT=${WORKDIR}/android-ndk-r28c
+ANDROID_NDK_SHA256="a7b54a5de87fecd125a17d54f73c446199e72a64"
 if [ ! -e "$ANDROID_NDK_ZIP" ]; then
-  curl https://dl.google.com/android/repository/android-ndk-r25c-linux.zip -o "${ANDROID_NDK_ZIP}"
+  curl https://dl.google.com/android/repository/android-ndk-r28c-linux.zip -o "${ANDROID_NDK_ZIP}"
 fi
 echo $ANDROID_NDK_SHA256 "$ANDROID_NDK_ZIP" | sha1sum -c || exit 1
 unzip "$ANDROID_NDK_ZIP" -d "$WORKDIR"
@@ -45,7 +45,7 @@ cd build/serai/hrf || exit
 sed -i "s/\[dependencies\]/\[dependencies\]\\
 openssl = { version = \"0.10\", features = [\"vendored\"] }/" Cargo.toml
 
-rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-android x86_64-linux-android
+rustup target add aarch64-linux-android armv7-linux-androideabi x86_64-linux-android
 cargo ndk \
   --target armv7-linux-androideabi \
   --target aarch64-linux-android \
