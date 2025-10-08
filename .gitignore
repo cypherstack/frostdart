@@ -34,4 +34,4 @@ build/
 
 android/src/main/jniLibs/
 
-macos/frostdart.dylib
+/macos/frostdart.xcframework/

@@ -11,12 +11,9 @@ const String _libName = 'frostdart';
 
 /// The dynamic library in which the symbols for [FrostdartBindings] can be found.
 final ffi.DynamicLibrary _dylib = () {
-  if (Platform.isIOS) {
+  if (Platform.isIOS || Platform.isMacOS) {
     return ffi.DynamicLibrary.process();
     // return ffi.DynamicLibrary.open('$_libName.framework/$_libName');
-  }
-  if (Platform.isMacOS) {
-    return ffi.DynamicLibrary.open('$_libName.dylib');
   }
   if (Platform.isAndroid || Platform.isLinux) {
     return ffi.DynamicLibrary.open('$_libName.so');

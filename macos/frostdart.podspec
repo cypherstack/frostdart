@@ -14,8 +14,7 @@ A new Flutter project.
   s.author           = { 'Your Company' => 'email@example.com' }
 
   s.source           = { :path => '.' }
-  s.static_framework = true
-  s.vendored_libraries = "**/*.a"
+  s.vendored_frameworks = 'frostdart.xcframework'
   s.dependency 'FlutterMacOS'
 
   s.platform = :osx, '10.11'
