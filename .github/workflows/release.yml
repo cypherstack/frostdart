@@ -115,8 +115,70 @@ jobs:
           name: frostdart-windows-x86_64.dll
           path: frostdart-windows-x86_64.dll
 
+  build-ios:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: '1.71.0'
+          targets: aarch64-apple-ios
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src/serai
+
+      - name: Build
+        run: |
+          cd src/serai/hrf
+          sed -i '' 's/name = "hrf-api"/name = "frostdart"/' Cargo.toml
+          export IPHONEOS_DEPLOYMENT_TARGET=15.0
+          export RUSTFLAGS="-C link-arg=-mios-version-min=15.0"
+          cargo build --target aarch64-apple-ios --release --lib
+          cp ../target/aarch64-apple-ios/release/libfrostdart.a \
+             ../../../frostdart-ios-aarch64.a
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: frostdart-ios-aarch64.a
+          path: frostdart-ios-aarch64.a
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: '1.71.0'
+          targets: aarch64-apple-darwin
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src/serai
+
+      - name: Build
+        run: |
+          cd src/serai/hrf
+          cargo build --target aarch64-apple-darwin --release --lib
+          xcodebuild -create-xcframework \
+            -library ../target/aarch64-apple-darwin/release/libhrf_api.dylib \
+            -output ../../../Frostdart.xcframework
+          cd ../../..
+          zip -r Frostdart.xcframework.zip Frostdart.xcframework
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Frostdart.xcframework.zip
+          path: Frostdart.xcframework.zip
+
   release:
-    needs: [build-linux, build-android, build-windows]
+    needs: [build-linux, build-android, build-ios, build-macos, build-windows]
     runs-on: ubuntu-latest
     permissions:
       contents: write
