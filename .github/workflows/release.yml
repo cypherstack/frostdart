@@ -1,0 +1,199 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+  workflow_dispatch:
+
+jobs:
+
+  build-linux:
+    runs-on: ubuntu-24.04
+    container:
+      image: stackwallet/stackwallet-ci:latest
+    strategy:
+      matrix:
+        include:
+          - target: x86_64-unknown-linux-gnu
+            asset: frostdart-linux-x86_64.so
+          - target: aarch64-unknown-linux-gnu
+            asset: frostdart-linux-aarch64.so
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Add Rust target
+        run: rustup +1.71.0 target add ${{ matrix.target }}
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src/serai
+          key: linux-${{ matrix.target }}
+
+      - name: Build
+        env:
+          CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER: aarch64-linux-gnu-gcc
+        run: |
+          cd src/serai/hrf
+          cargo +1.71.0 build --target ${{ matrix.target }} --release --lib
+          cp ../target/${{ matrix.target }}/release/libhrf_api.so \
+             ../../../${{ matrix.asset }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.asset }}
+          path: ${{ matrix.asset }}
+
+  build-android:
+    runs-on: ubuntu-24.04
+    container:
+      image: stackwallet/stackwallet-ci:latest
+    strategy:
+      matrix:
+        include:
+          - target: aarch64-linux-android
+            abi: arm64-v8a
+          - target: armv7-linux-androideabi
+            abi: armeabi-v7a
+          - target: x86_64-linux-android
+            abi: x86_64
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Add Rust target
+        run: rustup +1.71.0 target add ${{ matrix.target }}
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src/serai
+          key: android-${{ matrix.abi }}
+
+      - name: Build
+        env:
+          ANDROID_NDK_ROOT: /opt/android-ndk-r28
+        run: |
+          cd src/serai/hrf
+          sed -i 's/\[dependencies\]/[dependencies]\nopenssl = { version = "0.10", features = ["vendored"] }/' Cargo.toml
+          cargo +1.71.0 ndk --target ${{ matrix.target }} --platform 21 build --release
+          cp ../target/${{ matrix.target }}/release/libhrf_api.so \
+             ../../../frostdart-android-${{ matrix.abi }}.so
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: frostdart-android-${{ matrix.abi }}.so
+          path: frostdart-android-${{ matrix.abi }}.so
+
+  build-windows:
+    runs-on: ubuntu-24.04
+    container:
+      image: stackwallet/stackwallet-ci:latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Add Rust target
+        run: rustup +1.71.0 target add x86_64-pc-windows-gnu
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src/serai
+
+      - name: Build
+        run: |
+          cd src/serai/hrf
+          cargo +1.71.0 build --target x86_64-pc-windows-gnu --release --lib
+          cp ../target/x86_64-pc-windows-gnu/release/hrf_api.dll \
+             ../../../frostdart-windows-x86_64.dll
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: frostdart-windows-x86_64.dll
+          path: frostdart-windows-x86_64.dll
+
+  build-ios:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: '1.71.0'
+          targets: aarch64-apple-ios
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src/serai
+
+      - name: Build
+        run: |
+          cd src/serai/hrf
+          sed -i '' 's/name = "hrf-api"/name = "frostdart"/' Cargo.toml
+          export IPHONEOS_DEPLOYMENT_TARGET=15.0
+          export RUSTFLAGS="-C link-arg=-mios-version-min=15.0"
+          cargo build --target aarch64-apple-ios --release --lib
+          cp ../target/aarch64-apple-ios/release/libfrostdart.a \
+             ../../../frostdart-ios-aarch64.a
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: frostdart-ios-aarch64.a
+          path: frostdart-ios-aarch64.a
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: '1.71.0'
+          targets: aarch64-apple-darwin
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src/serai
+
+      - name: Build
+        run: |
+          cd src/serai/hrf
+          cargo build --target aarch64-apple-darwin --release --lib
+          xcodebuild -create-xcframework \
+            -library ../target/aarch64-apple-darwin/release/libhrf_api.dylib \
+            -output ../../../Frostdart.xcframework
+          cd ../../..
+          zip -r Frostdart.xcframework.zip Frostdart.xcframework
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Frostdart.xcframework.zip
+          path: Frostdart.xcframework.zip
+
+  release:
+    needs: [build-linux, build-android, build-ios, build-macos, build-windows]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Generate checksums
+        run: |
+          cd artifacts
+          sha256sum * > checksums.txt
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: artifacts/*
