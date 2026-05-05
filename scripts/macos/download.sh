@@ -23,7 +23,8 @@ download_and_verify() {
     grep "^[0-9a-f]*  ${asset}$" "$TMPDIR/checksums.txt" | (cd "$TMPDIR" && sha256sum -c)
 }
 
-mkdir -p "$LIB_ROOT/scripts/windows/build"
+download_and_verify "frostdart.xcframework.zip"
 
-download_and_verify "frostdart-windows-x86_64.dll"
-cp "$TMPDIR/frostdart-windows-x86_64.dll" "$LIB_ROOT/scripts/windows/build/frostdart.dll"
+rm -rf "$LIB_ROOT/macos/frostdart.xcframework"
+unzip -q "$TMPDIR/frostdart.xcframework.zip" -d "$TMPDIR/xcfw"
+cp -r "$TMPDIR/xcfw/frostdart.xcframework" "$LIB_ROOT/macos/frostdart.xcframework"

@@ -168,14 +168,14 @@ jobs:
           cargo build --target aarch64-apple-darwin --release --lib
           xcodebuild -create-xcframework \
             -library ../target/aarch64-apple-darwin/release/libhrf_api.dylib \
-            -output ../../../Frostdart.xcframework
+            -output ../../../frostdart.xcframework
           cd ../../..
-          zip -r Frostdart.xcframework.zip Frostdart.xcframework
+          zip -r frostdart.xcframework.zip frostdart.xcframework
 
       - uses: actions/upload-artifact@v4
         with:
-          name: Frostdart.xcframework.zip
-          path: Frostdart.xcframework.zip
+          name: frostdart.xcframework.zip
+          path: frostdart.xcframework.zip
 
   release:
     needs: [build-linux, build-android, build-ios, build-macos, build-windows]
