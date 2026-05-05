@@ -43,7 +43,8 @@ cd build/serai/hrf || exit
 
 # inject vendored openssl required for android cross compilation
 sed -i "s/\[dependencies\]/\[dependencies\]\\
-openssl = { version = \"<=0.10.78\", features = [\"vendored\"] }/" Cargo.toml
+openssl = { version = \"<=0.10.78\", features = [\"vendored\"] }\\
+openssl-sys = \"<=0.9.114\"/" Cargo.toml
 
 rustup target add aarch64-linux-android armv7-linux-androideabi x86_64-linux-android
 cargo ndk \
