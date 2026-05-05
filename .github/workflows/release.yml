@@ -77,7 +77,7 @@ jobs:
           ANDROID_NDK_ROOT: /opt/android-ndk-r28
         run: |
           cd src/serai/hrf
-          sed -i 's/\[dependencies\]/[dependencies]\nopenssl = { version = "0.10", features = ["vendored"] }/' Cargo.toml
+          sed -i 's/\[dependencies\]/[dependencies]\nopenssl = { version = "<=0.10.78", features = ["vendored"] }/' Cargo.toml
           cargo +1.71.0 ndk --target ${{ matrix.target }} --platform 21 build --release
           cp ../target/${{ matrix.target }}/release/libhrf_api.so \
              ../../../frostdart-android-${{ matrix.abi }}.so
