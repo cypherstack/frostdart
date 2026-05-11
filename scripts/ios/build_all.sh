@@ -1,12 +1,19 @@
 #!/bin/bash
+set -e
 
-ROOT_DIR="$(pwd)/../.."
+LIB_ROOT=../..
 
-mkdir -p build
+cd "$LIB_ROOT/src/serai/hrf" || exit
 
-rm -rf "$ROOT_DIR"/src/serai/target
+# cargokit's artifact search uses the Cargo package name verbatim, but cargo
+# normalizes dashes to underscores in the emitted filename. Rename so cargo's
+# output ("libfrostdart.a") and the podspec's vendored_libraries entry agree.
+# BSD sed (macOS) syntax; idempotent.
+sed -i '' 's/^name = "hrf-api"$/name = "frostdart"/' Cargo.toml
 
-cd "$ROOT_DIR"/src/serai/hrf || exit
+export IPHONEOS_DEPLOYMENT_TARGET=15.0
+export RUSTFLAGS="-C link-arg=-mios-version-min=15.0"
+cargo build --target aarch64-apple-ios --release --lib
 
-# Build is handled by cargokit which requires the rust crate be named the same
-sed -i .bak 's/hrf-api/frostdart/' cargo.toml
+cp ../target/aarch64-apple-ios/release/libfrostdart.a \
+   "$LIB_ROOT/ios/libfrostdart.a"

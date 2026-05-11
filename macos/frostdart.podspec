@@ -4,14 +4,16 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'frostdart'
-  s.version          = '0.0.1'
-  s.summary          = 'A new Flutter project.'
+  s.version          = '0.2.0'
+  s.summary          = 'Flutter FFI plugin for FROST threshold signing.'
   s.description      = <<-DESC
-A new Flutter project.
+Flutter FFI plugin wrapping the Rust HRF (FROST) crate from
+kayabaNerve/serai (a fork of serai-dex/serai) for threshold-signed
+Bitcoin wallets.
                        DESC
-  s.homepage         = 'http://example.com'
+  s.homepage         = 'https://github.com/cypherstack/frostdart'
   s.license          = { :file => '../LICENSE' }
-  s.author           = { 'Your Company' => 'email@example.com' }
+  s.author           = { 'Cypher Stack' => 'heyo@cypherstack.com' }
 
   s.source           = { :path => '.' }
   s.vendored_frameworks = 'frostdart.xcframework'

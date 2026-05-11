@@ -4,14 +4,16 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'frostdart'
-  s.version          = '0.0.1'
-  s.summary          = 'A new Flutter project.'
+  s.version          = '0.2.0'
+  s.summary          = 'Flutter FFI plugin for FROST threshold signing.'
   s.description      = <<-DESC
-A new Flutter project.
+Flutter FFI plugin wrapping the Rust HRF (FROST) crate from
+kayabaNerve/serai (a fork of serai-dex/serai) for threshold-signed
+Bitcoin wallets.
                        DESC
-  s.homepage         = 'http://example.com'
+  s.homepage         = 'https://github.com/cypherstack/frostdart'
   s.license          = { :file => '../LICENSE' }
-  s.author           = { 'Your Company' => 'email@example.com' }
+  s.author           = { 'Cypher Stack' => 'heyo@cypherstack.com' }
 
   # This will ensure the source files in Classes/ are included in the native
   # builds of apps using this FFI plugin. Podspec does not support relative
@@ -20,20 +22,19 @@ A new Flutter project.
   s.source           = { :path => '.' }
   s.source_files     = 'Classes/**/*'
 
-  s.script_phase = {
-    :name => 'Build Rust library',
-    # First argument is relative path to the `rust` folder, second is name of rust library
-    :script => 'sh "$PODS_TARGET_SRCROOT/../cargokit/build_pod.sh" ../src/serai/hrf frostdart',
-    :execution_position => :before_compile,
-    :input_files => ['${BUILT_PRODUCTS_DIR}/cargokit_phony'],
-    # Let XCode know that the static library referenced in -force_load below is
-    # created by this build step.
-    :output_files => ["${BUILT_PRODUCTS_DIR}/libfrostdart.a"],
-  }
+  # libfrostdart.a is produced by scripts/ios/download.sh (release artifact)
+  # or scripts/ios/build_all.sh (build from source). Both drop it next to this
+  # podspec. Consumers must run one of those before `pod install`.
+  s.vendored_libraries = 'libfrostdart.a'
+
+  s.dependency 'Flutter'
+  s.platform = :ios, '15.0'
+
   s.pod_target_xcconfig = {
     'DEFINES_MODULE' => 'YES',
     # Flutter.framework does not contain a i386 slice.
     'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386',
-    'OTHER_LDFLAGS' => '-force_load ${BUILT_PRODUCTS_DIR}/libfrostdart.a',
+    'OTHER_LDFLAGS' => '-force_load ${PODS_TARGET_SRCROOT}/libfrostdart.a',
   }
+  s.swift_version = '5.0'
 end
