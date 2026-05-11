@@ -1,7 +1,7 @@
 name: frostdart
-description: A new Flutter project.
-version: 0.0.1
-homepage:
+description: Flutter FFI plugin wrapping the Rust HRF (FROST) crate from kayabaNerve/serai (a fork of serai-dex/serai) for threshold-signed Bitcoin wallets.
+version: 0.2.0
+homepage: https://github.com/cypherstack/frostdart
 
 environment:
   sdk: '>=3.0.5 <4.0.0'

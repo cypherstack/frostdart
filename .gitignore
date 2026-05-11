@@ -35,3 +35,4 @@ build/
 android/src/main/jniLibs/
 
 /macos/frostdart.xcframework/
+/ios/libfrostdart.a
