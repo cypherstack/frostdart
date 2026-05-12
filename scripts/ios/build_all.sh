@@ -16,4 +16,4 @@ export RUSTFLAGS="-C link-arg=-mios-version-min=15.0"
 cargo build --target aarch64-apple-ios --release --lib
 
 cp ../target/aarch64-apple-ios/release/libfrostdart.a \
-   "$LIB_ROOT/ios/libfrostdart.a"
+   "$LIB_ROOT/../ios/libfrostdart.a"
