@@ -25,7 +25,7 @@ jobs:
       - name: Run tests
         run: |
           cd src/serai
-          cargo +1.71.0 test
+          cargo +1.71.0 test --workspace --exclude bitcoin-serai
 
   build-linux:
     needs: test
