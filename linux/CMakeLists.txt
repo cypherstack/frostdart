@@ -72,7 +72,7 @@ target_link_libraries(${PLUGIN_NAME} PRIVATE PkgConfig::GTK)
 # This list could contain prebuilt libraries, or libraries created by an
 # external build triggered from this build file.
 set(frostdart_bundled_libraries
-        ""
+        "${CMAKE_CURRENT_SOURCE_DIR}/../scripts/linux/build/frostdart.so"
         PARENT_SCOPE
         )
 
