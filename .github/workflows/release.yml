@@ -8,7 +8,27 @@ on:
 
 jobs:
 
+  test:
+    runs-on: ubuntu-24.04
+    container:
+      image: stackwallet/stackwallet-ci:latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src/serai
+          key: test
+
+      - name: Run tests
+        run: |
+          cd src/serai
+          cargo +1.71.0 test --workspace --exclude bitcoin-serai
+
   build-linux:
+    needs: test
     runs-on: ubuntu-24.04
     container:
       image: stackwallet/stackwallet-ci:latest
@@ -47,6 +67,7 @@ jobs:
           path: ${{ matrix.asset }}
 
   build-android:
+    needs: test
     runs-on: ubuntu-24.04
     container:
       image: stackwallet/stackwallet-ci:latest
@@ -88,6 +109,7 @@ jobs:
           path: frostdart-android-${{ matrix.abi }}.so
 
   build-windows:
+    needs: test
     runs-on: ubuntu-24.04
     container:
       image: stackwallet/stackwallet-ci:latest
@@ -116,6 +138,7 @@ jobs:
           path: frostdart-windows-x86_64.dll
 
   build-ios:
+    needs: test
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v6
@@ -147,6 +170,7 @@ jobs:
           path: frostdart-ios-aarch64.a
 
   build-macos:
+    needs: test
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v6
