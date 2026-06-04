@@ -28,6 +28,7 @@ Future<void> main(List<String> args) async {
   await _run("sed", ["-i", ".bak", "s/frostdart/hrf-api/", "cargo.toml"]);
 
   await _run("cargo", [
+    "+1.89.0",
     "lipo",
     "--release",
     "--targets",

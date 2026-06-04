@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+-*'
   workflow_dispatch:
 
 jobs:
@@ -25,7 +26,7 @@ jobs:
       - name: Run tests
         run: |
           cd src/serai
-          cargo +1.71.0 test --workspace --exclude bitcoin-serai
+          cargo +1.89.0 test --workspace --exclude bitcoin-serai
 
   build-linux:
     needs: test
@@ -45,7 +46,7 @@ jobs:
           submodules: recursive
 
       - name: Add Rust target
-        run: rustup +1.71.0 target add ${{ matrix.target }}
+        run: rustup +1.89.0 target add ${{ matrix.target }}
 
       - uses: Swatinem/rust-cache@v2
         with:
@@ -57,7 +58,7 @@ jobs:
           CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER: aarch64-linux-gnu-gcc
         run: |
           cd src/serai/hrf
-          cargo +1.71.0 build --target ${{ matrix.target }} --release --lib
+          cargo +1.89.0 build --target ${{ matrix.target }} --release --lib
           cp ../target/${{ matrix.target }}/release/libhrf_api.so \
              ../../../${{ matrix.asset }}
 
@@ -86,7 +87,7 @@ jobs:
           submodules: recursive
 
       - name: Add Rust target
-        run: rustup +1.71.0 target add ${{ matrix.target }}
+        run: rustup +1.89.0 target add ${{ matrix.target }}
 
       - uses: Swatinem/rust-cache@v2
         with:
@@ -98,8 +99,8 @@ jobs:
           ANDROID_NDK_ROOT: /opt/android-ndk-r28
         run: |
           cd src/serai/hrf
-          sed -i 's/\[dependencies\]/[dependencies]\nopenssl = { version = "<=0.10.78", features = ["vendored"] }\nopenssl-sys = "<=0.9.114"/' Cargo.toml
-          cargo +1.71.0 ndk --target ${{ matrix.target }} --platform 21 build --release
+          sed -i 's/\[dependencies\]/[dependencies]\nopenssl = { version = "0.10", features = ["vendored"] }/' Cargo.toml
+          cargo +1.89.0 ndk --target ${{ matrix.target }} --platform 21 build --release
           cp ../target/${{ matrix.target }}/release/libhrf_api.so \
              ../../../frostdart-android-${{ matrix.abi }}.so
 
@@ -119,7 +120,7 @@ jobs:
           submodules: recursive
 
       - name: Add Rust target
-        run: rustup +1.71.0 target add x86_64-pc-windows-gnu
+        run: rustup +1.89.0 target add x86_64-pc-windows-gnu
 
       - uses: Swatinem/rust-cache@v2
         with:
@@ -128,7 +129,7 @@ jobs:
       - name: Build
         run: |
           cd src/serai/hrf
-          cargo +1.71.0 build --target x86_64-pc-windows-gnu --release --lib
+          cargo +1.89.0 build --target x86_64-pc-windows-gnu --release --lib
           cp ../target/x86_64-pc-windows-gnu/release/hrf_api.dll \
              ../../../frostdart-windows-x86_64.dll
 
@@ -147,7 +148,7 @@ jobs:
 
       - uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: '1.71.0'
+          toolchain: '1.89.0'
           targets: aarch64-apple-ios
 
       - uses: Swatinem/rust-cache@v2
@@ -179,7 +180,7 @@ jobs:
 
       - uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: '1.71.0'
+          toolchain: '1.89.0'
           targets: aarch64-apple-darwin
 
       - uses: Swatinem/rust-cache@v2
