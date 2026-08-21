@@ -22,10 +22,12 @@ Bitcoin wallets.
   s.source           = { :path => '.' }
   s.source_files     = 'Classes/**/*'
 
-  # libfrostdart.a is produced by scripts/ios/download.sh (release artifact)
-  # or scripts/ios/build_all.sh (build from source). Both drop it next to this
-  # podspec. Consumers must run one of those before `pod install`.
-  s.vendored_libraries = 'libfrostdart.a'
+  # frostdart.xcframework is produced by scripts/ios/build_all.sh (build from
+  # source) or scripts/ios/download.sh (release artifact). Both drop it next
+  # to this podspec. Consumers must run one of those before `pod install`.
+  # The XCFramework carries arm64 device and arm64 simulator slices; a plain
+  # static library cannot hold both.
+  s.vendored_frameworks = 'frostdart.xcframework'
 
   s.dependency 'Flutter'
   s.platform = :ios, '15.0'
@@ -34,7 +36,15 @@ Bitcoin wallets.
     'DEFINES_MODULE' => 'YES',
     # Flutter.framework does not contain a i386 slice.
     'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386',
-    'OTHER_LDFLAGS' => '-force_load ${PODS_TARGET_SRCROOT}/libfrostdart.a',
+  }
+  # The Dart side resolves symbols from the process at runtime
+  # (DynamicLibrary.process()), so the whole archive must be linked into the
+  # app binary. This must live in user_target_xcconfig (not
+  # pod_target_xcconfig): CocoaPods only extracts the matching
+  # device/simulator XCFramework slice into PODS_XCFRAMEWORKS_BUILD_DIR
+  # while building the user target, after the pod target is built.
+  s.user_target_xcconfig = {
+    'OTHER_LDFLAGS' => '-force_load ${PODS_XCFRAMEWORKS_BUILD_DIR}/frostdart/libfrostdart.a',
   }
   s.swift_version = '5.0'
 end
