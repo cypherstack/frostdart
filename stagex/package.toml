@@ -1,0 +1,11 @@
+[package]
+name = "stack-wallet-frostdart"
+version = "90ee77d805224d8c6641e4123adc2cc74b701c9f"
+description = "Native HRF/FROST library used by Stack Wallet"
+license = "MIT"
+website = "https://github.com/kayabaNerve/serai"
+
+[sources.serai]
+hash = "53045e234b847b5cd8afaccb4009cd5cb5fbb49023fedead7e8946321467372f"
+file = "serai-{version}.tar.gz"
+mirrors = ["https://github.com/kayabaNerve/serai/archive/{version}.tar.gz"]

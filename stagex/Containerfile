@@ -1,0 +1,24 @@
+FROM stagex/pallet-rust AS build
+ARG VERSION
+ARG TARGETARCH
+ADD fetch/serai-${VERSION}.tar.gz /
+WORKDIR /serai-${VERSION}/hrf
+ENV SOURCE_DATE_EPOCH=1
+RUN cargo fetch --locked
+ENV CARGO_NET_OFFLINE=true
+ENV RUSTFLAGS="-C debuginfo=0 -C codegen-units=1 --remap-path-prefix=/serai-${VERSION}=."
+RUN --network=none <<-EOF
+	set -eu
+	cargo build \
+		--frozen \
+		--release \
+		--target "${ARCH}-unknown-linux-musl" \
+		--lib
+	install -Dm755 \
+		"../target/${ARCH}-unknown-linux-musl/release/libhrf_api.so" \
+		/rootfs/usr/lib/frostdart.so
+	install -Dm644 LICENSE /rootfs/usr/share/licenses/stack-wallet-frostdart/LICENSE
+EOF
+
+FROM stagex/core-filesystem AS package
+COPY --from=build /rootfs/ /
