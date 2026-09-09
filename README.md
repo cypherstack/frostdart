@@ -1,16 +1,19 @@
 # frostdart
 
-Dart interface to the Serai FROST multisig implementation
+Dart bindings for the Serai FROST multisig implementation. Rust sources live in
+`src/serai`; native assets build and bundle them automatically.
 
-## Building
+Requires Dart 3.13+ (or a Flutter SDK containing it), Rust installed with rustup,
+and the platform's C build tools: Xcode for Apple, the Android NDK, a Linux C
+compiler, or Visual Studio's C++ build tools on Windows. Put `rustup` on PATH.
+The hook locates the pinned Rust 1.90.0 tools and installs the target as needed.
 
+```sh
+dart pub get --no-example
+dart test
 ```
-git clone https://www.github.com/cypherstack/frostdart
-cd frostdart
-cd scripts/[platform]
-./build_all.sh
-```
 
-or `build_all.bat` for Windows.
+Consuming Flutter apps use normal `flutter run` / `flutter build` commands.
+The example requires iOS 15+ or macOS 13+ for Apple builds.
 
-Rust 1.71.0 or newer is required.  `[rustup](https://rustup.rs/) toolchain install 1.71.0-x86_64-pc-windows-msvc` for Windows.
+Regenerate bindings with `dart run ffigen --config ffigen.yaml` (requires libclang).

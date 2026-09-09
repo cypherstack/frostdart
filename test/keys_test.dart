@@ -3,8 +3,6 @@ import 'package:frostdart/frostdart_bindings_generated.dart';
 import 'package:frostdart/util.dart';
 import 'package:test/test.dart';
 
-import 'support/load_framework.dart';
-
 // Participant 1 from the Rust FROST secp256k1 vector:
 // src/serai/crypto/frost/src/tests/literal/vectors/frost-secp256k1-sha256.json
 // Serialized by ThresholdCore using vectors_to_multisig_keys in
@@ -16,8 +14,6 @@ const _keys = '09000000736563703235366b31020003000100'
     '031404710e938032db0d4f6a4cd20ae37384be98ba9fe05b42d139361202b391e6';
 
 void main() {
-  setUpAll(loadFramework);
-
   test('Rust vector keys survive a serialization round-trip', () {
     expect(serializeKeys(keys: deserializeKeys(keys: _keys)), _keys);
   });
@@ -31,11 +27,13 @@ void main() {
   test('invalid key encoding reports the native error', () {
     expect(
       () => deserializeKeys(keys: 'not hex'),
-      throwsA(isA<FrostdartException>().having(
-        (error) => error.errorCode,
-        'errorCode',
-        INVALID_ENCODING_ERROR,
-      )),
+      throwsA(
+        isA<FrostdartException>().having(
+          (error) => error.errorCode,
+          'errorCode',
+          INVALID_ENCODING_ERROR,
+        ),
+      ),
     );
   });
 }
