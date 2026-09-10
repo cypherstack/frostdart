@@ -1,0 +1,26 @@
+name: test-dependencies
+description: Installs test dependencies for Serai
+
+inputs:
+  github-token:
+    description: "GitHub token to install Protobuf with"
+    require: true
+    default:
+
+  bitcoin-version:
+    description: "Bitcoin version to download and run as a regtest node"
+    required: false
+    default: 24.0.1
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install Build Dependencies
+      uses: ./.github/actions/build-dependencies
+      with:
+        github-token: ${{ inputs.github-token }}
+
+    - name: Run a Bitcoin Regtest Node
+      uses: ./.github/actions/bitcoin
+      with:
+        version: ${{ inputs.bitcoin-version }}

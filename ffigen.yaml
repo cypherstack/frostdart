@@ -1,5 +1,11 @@
-# Run with `flutter pub run ffigen --config ffigen.yaml`.
+# Run with `dart run ffigen --config ffigen.yaml`.
 name: FrostdartBindings
+ffi-native:
+  asset-id: package:frostdart/frostdart_bindings_generated.dart
+enums:
+  as-int:
+    include:
+      - Network
 description: |
   Bindings for `src/serai/hrf/header.h`.
 

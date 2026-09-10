@@ -1,0 +1,22 @@
+[package]
+name = "serai-no-std-tests"
+version = "0.1.0"
+description = "A crate to test no-std builds of Serai crates work"
+license = "MIT"
+repository = "https://github.com/kayabaNerve/serai/tree/develop/tests/no-std"
+authors = ["Luke Parker <lukeparker5132@gmail.com>"]
+keywords = ["nostd", "no_std", "alloc"]
+edition = "2021"
+publish = false
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
+
+[dependencies]
+zeroize = { version = "1", default-features = false, features = ["alloc"] }
+
+dkg = { path = "../../crypto/dkg", default-features = false }
+# modular-frost = { path = "../../crypto/frost", default-features = false }
+
+bitcoin-serai = { path = "../../coins/bitcoin", default-features = false, features = ["hazmat"] }
