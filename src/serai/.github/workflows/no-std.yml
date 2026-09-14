@@ -1,0 +1,37 @@
+name: no-std build
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - "common/**"
+      - "crypto/**"
+      - "coins/**"
+      - "tests/no-std/**"
+
+  pull_request:
+    paths:
+      - "common/**"
+      - "crypto/**"
+      - "coins/**"
+      - "tests/no-std/**"
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Build Dependencies
+        uses: ./.github/actions/build-dependencies
+        with:
+          github-token: ${{ inputs.github-token }}
+
+      - name: Install RISC-V Toolchain
+        run: sudo apt install -y gcc-riscv64-unknown-elf gcc-multilib
+
+      - name: Verify no-std builds
+        run: cd tests/no-std && CFLAGS=-I/usr/include cargo build --target riscv32imac-unknown-none-elf

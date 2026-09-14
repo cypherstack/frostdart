@@ -1,0 +1,33 @@
+[package]
+name = "hrf-api"
+version = "0.1.0"
+description = "An API for wallet functionality per the HRF"
+license = "MIT"
+repository = "https://github.com/serai-dex/serai/tree/develop/coins/hrf"
+authors = ["Luke Parker <lukeparker5132@gmail.com>"]
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "staticlib"]
+
+[dependencies]
+zeroize = "^1.5"
+
+rand_core = "0.6"
+rand_chacha = "0.3"
+
+sha2 = "0.10"
+
+k256 = { version = "^0.13.1", default-features = false, features = ["std", "arithmetic", "bits"] }
+transcript = { package = "flexible-transcript", version = "0.3", features = ["recommended"] }
+ciphersuite = { version = "0.4", features = ["secp256k1"] }
+frost = { package = "modular-frost", path = "../crypto/frost", version = "0.8", features = ["secp256k1"] }
+
+bitcoin-serai = { path = "../coins/bitcoin" }
+
+hex = "0.4"
+base64ct = { version = "1", features = ["alloc"] }
+tiny-bip39 = "1"
+
+serde = "1"
+bincode = "1"

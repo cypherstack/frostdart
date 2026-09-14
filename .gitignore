@@ -31,8 +31,3 @@ build/
 
 .flutter-plugins
 .flutter-plugins-dependencies
-
-android/src/main/jniLibs/
-
-/macos/frostdart.xcframework/
-/ios/libfrostdart.a

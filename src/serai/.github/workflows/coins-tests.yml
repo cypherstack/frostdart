@@ -1,0 +1,35 @@
+name: coins/ Tests
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - "common/**"
+      - "crypto/**"
+      - "coins/**"
+
+  pull_request:
+    paths:
+      - "common/**"
+      - "crypto/**"
+      - "coins/**"
+
+  workflow_dispatch:
+
+jobs:
+  test-coins:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Test Dependencies
+        uses: ./.github/actions/test-dependencies
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run Tests
+        run: |
+          GITHUB_CI=true RUST_BACKTRACE=1 cargo test --all-features \
+            -p bitcoin-serai \
+            -p hrf-api
