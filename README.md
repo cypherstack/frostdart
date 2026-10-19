@@ -6,7 +6,7 @@ Dart bindings for the Serai FROST multisig implementation. Rust sources live in
 Requires Dart 3.13+ (or a Flutter SDK containing it), Rust installed with rustup,
 and the platform's C build tools: Xcode for Apple, the Android NDK, a Linux C
 compiler, or Visual Studio's C++ build tools on Windows. Put `rustup` on PATH.
-The hook locates the pinned Rust 1.90.0 tools and installs the target as needed.
+The hook locates the pinned Rust 1.99.1 tools and installs the target as needed.
 
 ```sh
 dart pub get --no-example
