@@ -16,7 +16,7 @@ jobs:
       - uses: dart-lang/setup-dart@v1
         with:
           sdk: '3.13.0'
-      - uses: dtolnay/rust-toolchain@1.90.0
+      - uses: dtolnay/rust-toolchain@1.99.1
       - run: dart pub get --no-example
       - run: dart analyze lib test hook
       - run: dart test
