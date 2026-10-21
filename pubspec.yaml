@@ -10,6 +10,10 @@ dependencies:
   ffi: ^2.0.1
   hooks: ^2.2.0
   code_assets: ^1.2.1
+  dnix:
+    git:
+      url: https://github.com/cypherstack/dnix.git
+      ref: 00e9a9d579196eda9dc09808d0774699c9320356
 
 dev_dependencies:
   test: ^1.26.3

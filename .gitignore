@@ -31,3 +31,9 @@ build/
 
 .flutter-plugins
 .flutter-plugins-dependencies
+
+# Nix build outputs
+/result
+/result-*
+# Per-checkout dnix build mode override (see README).
+.dnix-build
