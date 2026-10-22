@@ -13,7 +13,7 @@ dependencies:
   dnix:
     git:
       url: https://github.com/cypherstack/dnix.git
-      ref: 00e9a9d579196eda9dc09808d0774699c9320356
+      ref: 448c5da6e61b3f0e62b4eae6d08b49158a9e45b2
 
 dev_dependencies:
   test: ^1.26.3
