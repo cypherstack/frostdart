@@ -69,8 +69,8 @@ packages:
     dependency: transitive
     description:
       path: "."
-      ref: c6b2a9d3977b7dd0654dc729eefa6f3e3bdeea08
-      resolved-ref: c6b2a9d3977b7dd0654dc729eefa6f3e3bdeea08
+      ref: "57efe93b683e77d86a326a3a96ff217e6d6a4283"
+      resolved-ref: "57efe93b683e77d86a326a3a96ff217e6d6a4283"
       url: "https://github.com/slopbot9k/dnix.git"
     source: git
     version: "0.1.0"
