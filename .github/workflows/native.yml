@@ -1,0 +1,26 @@
+# Builds the Rust library on every reference host, fails if any host or the
+# committed dnix.lock disagrees, and publishes the release the lock names
+# when it reaches the default branch.
+name: Native library
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: write
+
+# A newer push supersedes runs on a branch, never on main: a run there may
+# be publishing.
+concurrency:
+  group: native-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != format('refs/heads/{0}', github.event.repository.default_branch) }}
+
+jobs:
+  native:
+    # The same dnix commit as pubspec.yaml and flake.lock.
+    uses: slopbot9k/dnix/.github/workflows/native.yml@57efe93b683e77d86a326a3a96ff217e6d6a4283
+    with:
+      # Xcode 27 lives on its own public-preview image, not on macos-26.
+      macos-runner: xcode-27

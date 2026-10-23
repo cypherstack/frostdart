@@ -65,6 +65,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.5"
+  dnix:
+    dependency: transitive
+    description:
+      path: "."
+      ref: "57efe93b683e77d86a326a3a96ff217e6d6a4283"
+      resolved-ref: "57efe93b683e77d86a326a3a96ff217e6d6a4283"
+      url: "https://github.com/slopbot9k/dnix.git"
+    source: git
+    version: "0.1.0"
   fake_async:
     dependency: transitive
     description:
