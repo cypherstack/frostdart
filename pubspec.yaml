@@ -12,8 +12,8 @@ dependencies:
   code_assets: ^1.2.1
   dnix:
     git:
-      url: https://github.com/cypherstack/dnix.git
-      ref: 7b9ef2d34b6e1aeb05869da0843f85d28fd19bbd
+      url: https://github.com/slopbot9k/dnix.git
+      ref: c6b2a9d3977b7dd0654dc729eefa6f3e3bdeea08
 
 dev_dependencies:
   test: ^1.26.3

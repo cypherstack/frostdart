@@ -20,7 +20,7 @@ concurrency:
 jobs:
   native:
     # The same dnix commit as pubspec.yaml and flake.lock.
-    uses: cypherstack/dnix/.github/workflows/native.yml@7b9ef2d34b6e1aeb05869da0843f85d28fd19bbd
+    uses: slopbot9k/dnix/.github/workflows/native.yml@c6b2a9d3977b7dd0654dc729eefa6f3e3bdeea08
     with:
       # Xcode 27 lives on its own public-preview image, not on macos-26.
       macos-runner: xcode-27
