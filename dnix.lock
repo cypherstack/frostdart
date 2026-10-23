@@ -1,15 +1,15 @@
 {
-  "release": "153ad2444de7",
-  "date": "2026-10-22",
+  "release": "780746010c71",
+  "date": "2026-10-23",
   "files": {
     "aarch64-apple-darwin/libhrf_api.dylib": "62b494f6ddccd034e1c8d16f28ded45b1737e367df5869e2fb0dbec0ee59fdef",
-    "aarch64-apple-ios-sim/libhrf_api.dylib": "a7ea9d3dda8e3064c211bd9ff577ee28656dbae8e9c542f51b5edee05bbedc59",
-    "aarch64-apple-ios/libhrf_api.dylib": "7cd636c2a5a5ddafea0337a8821b9912e947db74bb71f719b67e8c50bb62ed51",
+    "aarch64-apple-ios-sim/libhrf_api.dylib": "7fcddfeaab9cd9dfc7f75d734a78144adc2e7ff6cb09f19a06a65938447f86de",
+    "aarch64-apple-ios/libhrf_api.dylib": "f80ea3d4bfbab97683a0ca45928bf99cb2741fa681d61048193ad278ca0255ac",
     "aarch64-linux-android/libhrf_api.so": "17c4aaa8659efc92ee37abd8d040e73b4cca34fc404776ac266bfe6be2150525",
     "aarch64-unknown-linux-gnu/libhrf_api.so": "f2c083c7bf06b3c03fc268136bd0e1a9b3f6d683041106eac38af322d897fa38",
     "armv7-linux-androideabi/libhrf_api.so": "6a0f91a0d6f1964744011cf8e68258f9123b7cce335fc5edbe1aa2546ce02a84",
     "x86_64-apple-darwin/libhrf_api.dylib": "14adca4a9ba9711c868c229dc8386d1fb38814746374df6e23d9e971f4966dce",
-    "x86_64-apple-ios/libhrf_api.dylib": "173b112008ce49d7094d53d16cfb531dda46870adf47bead0a8d3c69f8a906ce",
+    "x86_64-apple-ios/libhrf_api.dylib": "a9304f7c22b244135029ba1c02e453c3d092db95df23a83e4343266f0ca9123f",
     "x86_64-linux-android/libhrf_api.so": "d3cd02cd9a0b7de631cca5ec9f68d1a59e6ddca7c545c7e10b186d1bc08a2058",
     "x86_64-pc-windows-msvc/hrf_api.dll": "461731d3c79d1e99fe9472ef20165e793476b6de1092f07673735bdac14a5278",
     "x86_64-unknown-linux-gnu/libhrf_api.so": "73e8812fa3b39cd034b83e3c4e0b6f5a2d621f97dd962d6777bf731c35ad9e23"

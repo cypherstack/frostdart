@@ -40,9 +40,11 @@ hooks:
   working on the Rust code. The hook notices a `.dnix-build` file from its
   next run on, so touch `dnix.json` after creating it.
 
-Only dynamic libraries are provided, built for macOS 12, iOS 15, Android API
-24, and glibc 2.28 at minimum. The floors, the Rust and Xcode versions, and
-the location of the Rust workspace live in `dnix.json`.
+Only dynamic libraries are provided, built for macOS 12, iOS 13 (the arm64
+simulator 14), Android API 24, and glibc 2.28 at minimum. iOS stays at 13
+because Flutter 3.47 asks build hooks for iOS 13 and writes 13.0 into each
+native asset's framework as its minimum. The floors, the Rust and Xcode
+versions, and the location of the Rust workspace live in `dnix.json`.
 
 ### Releases
 
