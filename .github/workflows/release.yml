@@ -2,24 +2,66 @@ name: Test native assets
 
 on:
   push:
+    branches: [main]
   pull_request:
   workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: test-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   test:
     strategy:
+      fail-fast: false
       matrix:
-        os: [ubuntu-24.04, ubuntu-24.04-arm, macos-latest, windows-latest]
+        os: [ubuntu-24.04, ubuntu-24.04-arm, xcode-27, windows-latest]
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - uses: dart-lang/setup-dart@v1
         with:
           sdk: '3.13.0'
       - uses: dtolnay/rust-toolchain@1.99.1
+        if: matrix.os == 'ubuntu-24.04'
+      # The hook builds through the Nix flake; before the first native
+      # release that is the only path, and it is unavailable on Windows.
+      - uses: DeterminateSystems/nix-installer-action@v23
+        if: runner.os != 'Windows'
       - run: dart pub get --no-example
-      - run: dart analyze lib test hook
-      - run: dart test
+      - run: dart analyze lib test hook tool
+      # Prebuilt libraries exist once the lock's release is published from the
+      # default branch of the repository dnix.json names; until then only
+      # hosts with Nix can build them.
+      - name: Check whether the lock's release is published
+        id: release
+        shell: bash
+        run: |
+          repository=$(jq -r .repository dnix.json | sed 's/\.git$//; s#/$##')
+          tag="native-$(jq -r .release dnix.lock)"
+          url="$repository/releases/tag/$tag"
+          echo "published=$([ "$(curl -s -o /dev/null -w '%{http_code}' "$url")" = 200 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+      # Prebuilt once published; until then Linux and macOS verify the source
+      # build against the lock, and Windows, without Nix, skips the tests.
+      - name: Choose the build mode
+        shell: bash
+        run: echo '${{ steps.release.outputs.published == 'true' && 'prebuilt' || 'source' }}' > .dnix-build
+      # On failure the last lines become an annotation, readable without
+      # access to the logs.
+      - name: Run dart test
+        if: runner.os != 'Windows' || steps.release.outputs.published == 'true'
+        shell: bash
+        run: |
+          if ! dart test 2>&1 | tee test.log; then
+            echo "::error::$(tail -c 1500 test.log | tr '\n' ' ')"
+            exit 1
+          fi
       - name: Rust tests
         if: matrix.os == 'ubuntu-24.04'
         working-directory: src/serai/hrf

@@ -28,3 +28,7 @@ multiexp = { opt-level = 3 }
 
 [profile.release]
 panic = "unwind"
+# Explicit so reproducibility does not depend on toolchain defaults.
+debug = false
+strip = "debuginfo"
+incremental = false
