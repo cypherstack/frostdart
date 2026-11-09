@@ -1,5 +1,9 @@
 ## Unreleased
 
+* Update dnix to support native Windows source and development builds through
+  WSL2, including the `wsl_distribution` user define and fixes for paths
+  containing percent escapes. Source builds still verify the existing
+  native-library hashes.
 * The build hook, the Nix build, and the workflows now come from the shared `dnix` package; the package keeps `dnix.json`, `dnix.lock`, a two-line hook, and a two-line flake.
 * The hook obtains the native library in one of three modes: `prebuilt` downloads the library of the pinned native release and verifies its hash, `source` builds it with the Nix flake and verifies the same hash, and `dev` builds with Nix without the Xcode pin or hash check. Static linking is no longer offered.
 * `dnix.lock` is a source file: `update_lock` records what the Rust source builds to and names the release, derived from the hashes, that holds those bytes. CI fails when source and lock disagree and publishes the release when the lock reaches the default branch; nothing is committed by CI.
